@@ -9,23 +9,7 @@
   "bugs": {
     "url": "https://github.com/segwit/atbcore-node/issues"
   },
-  "contributors": [
-    {
-      "name": "Christopher Jeffrey"
-    },
-    {
-      "name": "Braydon Fuller",
-      "email": "braydon@bitpay.com"
-    },
-    {
-      "name": "Chris Kleeschulte",
-      "email": "chrisk@bitpay.com"
-    },
-    {
-      "name": "Patrick Nagurny",
-      "email": "patrick@bitpay.com"
-    }
-  ],
+  "contributors": [],
   "bin": {
     "atbcore-node": "./bin/atbcore-node"
   },
