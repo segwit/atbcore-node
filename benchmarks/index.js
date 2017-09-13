@@ -26,7 +26,7 @@ var fixtureData = {
   ]
 };
 
-var bitcoind = require('../').services.Bitcoin({
+var atbcoind = require('../').services.Bitcoin({
   node: {
     datadir: process.env.HOME + '/.bitcoin',
     network: {
@@ -35,18 +35,18 @@ var bitcoind = require('../').services.Bitcoin({
   }
 });
 
-bitcoind.on('error', function(err) {
+atbcoind.on('error', function(err) {
   console.error(err.message);
 });
 
-bitcoind.start(function(err) {
+atbcoind.start(function(err) {
   if (err) {
     throw err;
   }
   console.log('Bitcoin Core started');
 });
 
-bitcoind.on('ready', function() {
+atbcoind.on('ready', function() {
 
   console.log('Bitcoin Core ready');
 
@@ -69,7 +69,7 @@ bitcoind.on('ready', function() {
           c = 0;
         }
         var hash = fixtureData.blockHashes[c];
-        bitcoind.getBlock(hash, function(err, block) {
+          atbcoind.getBlock(hash, function(err, block) {
           if (err) {
             throw err;
           }
@@ -97,7 +97,7 @@ bitcoind.on('ready', function() {
           c = 0;
         }
         var hash = fixtureData.txHashes[c];
-        bitcoind.getTransaction(hash, true, function(err, tx) {
+          atbcoind.getTransaction(hash, true, function(err, tx) {
           if (err) {
             throw err;
           }
@@ -122,22 +122,22 @@ bitcoind.on('ready', function() {
 
       var suite = new benchmark.Suite();
 
-      suite.add('bitcoind getblock (native)', bitcoindGetBlockNative, {
+      suite.add('atbcoind getblock (native)', bitcoindGetBlockNative, {
         defer: true,
         maxTime: maxTime
       });
 
-      suite.add('bitcoind getblock (json rpc)', bitcoindGetBlockJsonRpc, {
+      suite.add('atbcoind getblock (json rpc)', bitcoindGetBlockJsonRpc, {
         defer: true,
         maxTime: maxTime
       });
 
-      suite.add('bitcoind gettransaction (native)', bitcoinGetTransactionNative, {
+      suite.add('atbcoind gettransaction (native)', bitcoinGetTransactionNative, {
         defer: true,
         maxTime: maxTime
       });
 
-      suite.add('bitcoind gettransaction (json rpc)', bitcoinGetTransactionJsonRpc, {
+      suite.add('atbcoind gettransaction (json rpc)', bitcoinGetTransactionJsonRpc, {
         defer: true,
         maxTime: maxTime
       });
@@ -158,7 +158,7 @@ bitcoind.on('ready', function() {
       throw err;
     }
     console.log('Finished');
-    bitcoind.stop(function(err) {
+      atbcoind.stop(function(err) {
       if (err) {
         console.error('Fail to stop services: ' + err);
         process.exit(1);

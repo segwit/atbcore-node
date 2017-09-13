@@ -23,7 +23,7 @@ var configuration = {
   network: 'testnet',
   services: [
     {
-      name: 'bitcoind',
+      name: 'atbcoind',
       module: Bitcoin,
       config: {}
     }

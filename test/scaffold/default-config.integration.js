@@ -6,20 +6,20 @@ var sinon = require('sinon');
 var proxyquire = require('proxyquire');
 
 describe('#defaultConfig', function() {
-  var expectedExecPath = path.resolve(__dirname, '../../bin/bitcoind');
+  var expectedExecPath = path.resolve(__dirname, '../../bin/atbcoind');
 
   it('will return expected configuration', function() {
     var config = JSON.stringify({
       network: 'livenet',
       port: 3001,
       services: [
-        'bitcoind',
+        'atbcoind',
         'web'
       ],
       servicesConfig: {
-        bitcoind: {
+          atbcoind: {
           spawn: {
-            datadir: process.env.HOME + '/.bitcore/data',
+            datadir: process.env.HOME + '/.atbcore/data',
             exec: expectedExecPath
           }
         }
@@ -45,24 +45,24 @@ describe('#defaultConfig', function() {
     info.path.should.equal(home + '/.bitcore');
     info.config.network.should.equal('livenet');
     info.config.port.should.equal(3001);
-    info.config.services.should.deep.equal(['bitcoind', 'web']);
-    var bitcoind = info.config.servicesConfig.bitcoind;
-    should.exist(bitcoind);
-    bitcoind.spawn.datadir.should.equal(home + '/.bitcore/data');
-    bitcoind.spawn.exec.should.equal(expectedExecPath);
+    info.config.services.should.deep.equal(['atbcoind', 'web']);
+    var atbcoind = info.config.servicesConfig.atbcoind;
+    should.exist(atbcoind);
+      atbcoind.spawn.datadir.should.equal(home + '/.bitcore/data');
+      atbcoind.spawn.exec.should.equal(expectedExecPath);
   });
   it('will include additional services', function() {
     var config = JSON.stringify({
       network: 'livenet',
       port: 3001,
       services: [
-        'bitcoind',
+        'atbcoind',
         'web',
         'insight-api',
         'insight-ui'
       ],
       servicesConfig: {
-        bitcoind: {
+          atbcoind: {
           spawn: {
             datadir: process.env.HOME + '/.bitcore/data',
             exec: expectedExecPath
@@ -93,14 +93,14 @@ describe('#defaultConfig', function() {
     info.config.network.should.equal('livenet');
     info.config.port.should.equal(3001);
     info.config.services.should.deep.equal([
-      'bitcoind',
+      'atbcoind',
       'web',
       'insight-api',
       'insight-ui'
     ]);
-    var bitcoind = info.config.servicesConfig.bitcoind;
-    should.exist(bitcoind);
-    bitcoind.spawn.datadir.should.equal(home + '/.bitcore/data');
-    bitcoind.spawn.exec.should.equal(expectedExecPath);
+    var atbcoind = info.config.servicesConfig.atbcoind;
+    should.exist(atbcoind);
+      atbcoind.spawn.datadir.should.equal(home + '/.bitcore/data');
+      atbcoind.spawn.exec.should.equal(expectedExecPath);
   });
 });

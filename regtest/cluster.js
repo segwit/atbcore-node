@@ -19,7 +19,7 @@ var BitcoinService = index.services.Bitcoin;
 describe('Bitcoin Cluster', function() {
   var node;
   var daemons = [];
-  var execPath = path.resolve(__dirname, '../bin/bitcoind');
+  var execPath = path.resolve(__dirname, '../bin/atbcoind');
   var nodesConf = [
     {
       datadir: path.resolve(__dirname, './data/node1'),
@@ -96,13 +96,13 @@ describe('Bitcoin Cluster', function() {
     }, 1000);
   });
 
-  it('step 1: will connect to three bitcoind daemons', function(done) {
+  it('step 1: will connect to three atbcoind daemons', function(done) {
     this.timeout(20000);
     var configuration = {
       network: 'regtest',
       services: [
         {
-          name: 'bitcoind',
+          name: 'atbcoind',
           module: BitcoinService,
           config: {
             connect: [
@@ -156,7 +156,7 @@ describe('Bitcoin Cluster', function() {
 
   it('step 2: receive block events', function(done) {
     this.timeout(10000);
-    node.services.bitcoind.once('tip', function(height) {
+    node.services.atbcoind.once('tip', function(height) {
       height.should.equal(1);
       done();
     });

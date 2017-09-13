@@ -66,7 +66,7 @@ ln -s ~/atbcoind-rpc
 And if you're compiling or developing ATBcoin:
 ```bash
 cd ../bin
-ln -sf ~/bitcoin/src/bitcoind
+ln -sf ~/atbcoind/src/atbcoind
 ```
 
 ## Run Tests
@@ -85,12 +85,12 @@ npm run test
 
 To run a specific unit test in watch mode:
 ```bash
-mocha -w -R spec test/services/bitcoind.unit.js
+mocha -w -R spec test/services/atbcoind.unit.js
 ```
 
 To run a specific regtest:
 ```bash
-mocha -R spec regtest/bitcoind.js
+mocha -R spec regtest/atbcoind.js
 ```
 
 ## Running a Development Node
@@ -112,16 +112,16 @@ Edit `atbcore-node.json` with something similar to:
   "network": "livenet",
   "port": 3001,
   "services": [
-    "bitcoind",
+    "atbcoind",
     "web",
     "insight-api",
     "insight-ui",
     "<additional_service>"
   ],
   "servicesConfig": {
-    "bitcoind": {
+    "atbcoind": {
       "spawn": {
-        "datadir": "/home/<youruser>/.bitcoin",
+        "datadir": "/home/<youruser>/.atbcoin",
         "exec": "/home/<youruser>/atbcoin/src/atbcoind"
       }
     }

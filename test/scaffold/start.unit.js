@@ -118,7 +118,7 @@ describe('#start', function() {
         return internal;
       };
       var config = {
-        services: ['bitcoind']
+        services: ['atbcoind']
       };
       (function() {
         setupServices(testRequire, cwd, config);

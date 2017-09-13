@@ -15,7 +15,7 @@ var Transaction = bitcore.Transaction;
 var BN = bitcore.crypto.BN;
 var async = require('async');
 var rimraf = require('rimraf');
-var bitcoind;
+var atbcoind;
 
 /* jshint unused: false */
 var should = chai.should();
@@ -49,27 +49,27 @@ describe('P2P Functionality', function() {
         throw err;
       }
 
-      bitcoind = require('../').services.Bitcoin({
+        atbcoind = require('../').services.Bitcoin({
         spawn: {
           datadir: datadir,
-          exec: path.resolve(__dirname, '../bin/bitcoind')
+          exec: path.resolve(__dirname, '../bin/atbcoind')
         },
         node: {
           network: bitcore.Networks.testnet
         }
       });
 
-      bitcoind.on('error', function(err) {
+        atbcoind.on('error', function(err) {
         log.error('error="%s"', err.message);
       });
 
       log.info('Waiting for Bitcoin Core to initialize...');
 
-      bitcoind.start(function(err) {
+        atbcoind.start(function(err) {
         if (err) {
           throw err;
         }
-        log.info('Bitcoind started');
+        log.info('atbcoind started');
 
         client = new BitcoinRPC({
           protocol: 'http',
@@ -163,8 +163,8 @@ describe('P2P Functionality', function() {
     this.timeout(20000);
     peer.on('disconnect', function() {
       log.info('Peer disconnected');
-      bitcoind.node.stopping = true;
-      bitcoind.stop(function(err, result) {
+        atbcoind.node.stopping = true;
+        atbcoind.stop(function(err, result) {
         done();
       });
     });
@@ -176,7 +176,7 @@ describe('P2P Functionality', function() {
 
     var usedTxs = {};
 
-    bitcoind.on('tx', function(buffer) {
+      atbcoind.on('tx', function(buffer) {
       var txFromResult = new Transaction().fromBuffer(buffer);
       var tx = usedTxs[txFromResult.id];
       should.exist(tx);

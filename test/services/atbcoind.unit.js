@@ -19,7 +19,7 @@ var errors = index.errors;
 
 var Transaction = bitcore.Transaction;
 var readFileSync = sinon.stub().returns(fs.readFileSync(path.resolve(__dirname, '../data/bitcoin.conf')));
-var BitcoinService = proxyquire('../../lib/services/bitcoind', {
+var BitcoinService = proxyquire('../../lib/services/atbcoind', {
   fs: {
     readFileSync: readFileSync
   }
@@ -41,41 +41,41 @@ describe('Bitcoin Service', function() {
 
   describe('@constructor', function() {
     it('will create an instance', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      should.exist(bitcoind);
+      var atbcoind = new BitcoinService(baseConfig);
+      should.exist(atbcoind);
     });
     it('will create an instance without `new`', function() {
-      var bitcoind = BitcoinService(baseConfig);
-      should.exist(bitcoind);
+      var atbcoind = BitcoinService(baseConfig);
+      should.exist(atbcoind);
     });
     it('will init caches', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      should.exist(bitcoind.utxosCache);
-      should.exist(bitcoind.txidsCache);
-      should.exist(bitcoind.balanceCache);
-      should.exist(bitcoind.summaryCache);
-      should.exist(bitcoind.transactionDetailedCache);
+      var atbcoind = new BitcoinService(baseConfig);
+      should.exist(atbcoind.utxosCache);
+      should.exist(atbcoind.txidsCache);
+      should.exist(atbcoind.balanceCache);
+      should.exist(atbcoind.summaryCache);
+      should.exist(atbcoind.transactionDetailedCache);
 
-      should.exist(bitcoind.transactionCache);
-      should.exist(bitcoind.rawTransactionCache);
-      should.exist(bitcoind.blockCache);
-      should.exist(bitcoind.rawBlockCache);
-      should.exist(bitcoind.blockHeaderCache);
-      should.exist(bitcoind.zmqKnownTransactions);
-      should.exist(bitcoind.zmqKnownBlocks);
-      should.exist(bitcoind.lastTip);
-      should.exist(bitcoind.lastTipTimeout);
+      should.exist(atbcoind.transactionCache);
+      should.exist(atbcoind.rawTransactionCache);
+      should.exist(atbcoind.blockCache);
+      should.exist(atbcoind.rawBlockCache);
+      should.exist(atbcoind.blockHeaderCache);
+      should.exist(atbcoind.zmqKnownTransactions);
+      should.exist(atbcoind.zmqKnownBlocks);
+      should.exist(atbcoind.lastTip);
+      should.exist(atbcoind.lastTipTimeout);
     });
     it('will init clients', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.should.deep.equal([]);
-      bitcoind.nodesIndex.should.equal(0);
-      bitcoind.nodes.push({client: sinon.stub()});
-      should.exist(bitcoind.client);
+      var atbcoind = new BitcoinService(baseConfig);
+        atbcoind.nodes.should.deep.equal([]);
+        atbcoind.nodesIndex.should.equal(0);
+        atbcoind.nodes.push({client: sinon.stub()});
+      should.exist(atbcoind.client);
     });
     it('will set subscriptions', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.subscriptions.should.deep.equal({
+      var atbcoind = new BitcoinService(baseConfig);
+        atbcoind.subscriptions.should.deep.equal({
         address: {},
         rawtransaction: [],
         hashblock: []
@@ -85,11 +85,11 @@ describe('Bitcoin Service', function() {
 
   describe('#_initDefaults', function() {
     it('will set transaction concurrency', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._initDefaults({transactionConcurrency: 10});
-      bitcoind.transactionConcurrency.should.equal(10);
-      bitcoind._initDefaults({});
-      bitcoind.transactionConcurrency.should.equal(5);
+      var atbcoind = new BitcoinService(baseConfig);
+        atbcoind._initDefaults({transactionConcurrency: 10});
+        atbcoind.transactionConcurrency.should.equal(10);
+        atbcoind._initDefaults({});
+        atbcoind.transactionConcurrency.should.equal(5);
     });
   });
 
@@ -101,8 +101,8 @@ describe('Bitcoin Service', function() {
 
   describe('#getAPIMethods', function() {
     it('will return spec', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      var methods = bitcoind.getAPIMethods();
+      var atbcoind = new BitcoinService(baseConfig);
+      var methods = atbcoind.getAPIMethods();
       should.exist(methods);
       methods.length.should.equal(21);
     });
@@ -110,44 +110,44 @@ describe('Bitcoin Service', function() {
 
   describe('#getPublishEvents', function() {
     it('will return spec', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      var events = bitcoind.getPublishEvents();
+      var atbcoind = new BitcoinService(baseConfig);
+      var events = atbcoind.getPublishEvents();
       should.exist(events);
       events.length.should.equal(3);
-      events[0].name.should.equal('bitcoind/rawtransaction');
-      events[0].scope.should.equal(bitcoind);
+      events[0].name.should.equal('atbcoind/rawtransaction');
+      events[0].scope.should.equal(atbcoind);
       events[0].subscribe.should.be.a('function');
       events[0].unsubscribe.should.be.a('function');
-      events[1].name.should.equal('bitcoind/hashblock');
-      events[1].scope.should.equal(bitcoind);
+      events[1].name.should.equal('atbcoind/hashblock');
+      events[1].scope.should.equal(atbcoind);
       events[1].subscribe.should.be.a('function');
       events[1].unsubscribe.should.be.a('function');
-      events[2].name.should.equal('bitcoind/addresstxid');
-      events[2].scope.should.equal(bitcoind);
+      events[2].name.should.equal('atbcoind/addresstxid');
+      events[2].scope.should.equal(atbcoind);
       events[2].subscribe.should.be.a('function');
       events[2].unsubscribe.should.be.a('function');
     });
     it('will call subscribe/unsubscribe with correct args', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.subscribe = sinon.stub();
-      bitcoind.unsubscribe = sinon.stub();
-      var events = bitcoind.getPublishEvents();
+      var atbcoind = new BitcoinService(baseConfig);
+        atbcoind.subscribe = sinon.stub();
+        atbcoind.unsubscribe = sinon.stub();
+      var events = atbcoind.getPublishEvents();
 
       events[0].subscribe('test');
-      bitcoind.subscribe.args[0][0].should.equal('rawtransaction');
-      bitcoind.subscribe.args[0][1].should.equal('test');
+        atbcoind.subscribe.args[0][0].should.equal('rawtransaction');
+        atbcoind.subscribe.args[0][1].should.equal('test');
 
       events[0].unsubscribe('test');
-      bitcoind.unsubscribe.args[0][0].should.equal('rawtransaction');
-      bitcoind.unsubscribe.args[0][1].should.equal('test');
+        atbcoind.unsubscribe.args[0][0].should.equal('rawtransaction');
+        atbcoind.unsubscribe.args[0][1].should.equal('test');
 
       events[1].subscribe('test');
-      bitcoind.subscribe.args[1][0].should.equal('hashblock');
-      bitcoind.subscribe.args[1][1].should.equal('test');
+        atbcoind.subscribe.args[1][0].should.equal('hashblock');
+        atbcoind.subscribe.args[1][1].should.equal('test');
 
       events[1].unsubscribe('test');
-      bitcoind.unsubscribe.args[1][0].should.equal('hashblock');
-      bitcoind.unsubscribe.args[1][1].should.equal('test');
+        atbcoind.unsubscribe.args[1][0].should.equal('hashblock');
+        atbcoind.unsubscribe.args[1][1].should.equal('test');
     });
   });
 
@@ -160,14 +160,14 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('will push to subscriptions', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter = {};
-      bitcoind.subscribe('hashblock', emitter);
-      bitcoind.subscriptions.hashblock[0].should.equal(emitter);
+        atbcoind.subscribe('hashblock', emitter);
+        atbcoind.subscriptions.hashblock[0].should.equal(emitter);
 
       var emitter2 = {};
-      bitcoind.subscribe('rawtransaction', emitter2);
-      bitcoind.subscriptions.rawtransaction[0].should.equal(emitter2);
+        atbcoind.subscribe('rawtransaction', emitter2);
+        atbcoind.subscriptions.rawtransaction[0].should.equal(emitter2);
     });
   });
 
@@ -180,34 +180,34 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('will remove item from subscriptions', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter1 = {};
       var emitter2 = {};
       var emitter3 = {};
       var emitter4 = {};
       var emitter5 = {};
-      bitcoind.subscribe('hashblock', emitter1);
-      bitcoind.subscribe('hashblock', emitter2);
-      bitcoind.subscribe('hashblock', emitter3);
-      bitcoind.subscribe('hashblock', emitter4);
-      bitcoind.subscribe('hashblock', emitter5);
-      bitcoind.subscriptions.hashblock.length.should.equal(5);
+        atbcoind.subscribe('hashblock', emitter1);
+        atbcoind.subscribe('hashblock', emitter2);
+        atbcoind.subscribe('hashblock', emitter3);
+        atbcoind.subscribe('hashblock', emitter4);
+        atbcoind.subscribe('hashblock', emitter5);
+        atbcoind.subscriptions.hashblock.length.should.equal(5);
 
-      bitcoind.unsubscribe('hashblock', emitter3);
-      bitcoind.subscriptions.hashblock.length.should.equal(4);
-      bitcoind.subscriptions.hashblock[0].should.equal(emitter1);
-      bitcoind.subscriptions.hashblock[1].should.equal(emitter2);
-      bitcoind.subscriptions.hashblock[2].should.equal(emitter4);
-      bitcoind.subscriptions.hashblock[3].should.equal(emitter5);
+        atbcoind.unsubscribe('hashblock', emitter3);
+        atbcoind.subscriptions.hashblock.length.should.equal(4);
+        atbcoind.subscriptions.hashblock[0].should.equal(emitter1);
+        atbcoind.subscriptions.hashblock[1].should.equal(emitter2);
+        atbcoind.subscriptions.hashblock[2].should.equal(emitter4);
+        atbcoind.subscriptions.hashblock[3].should.equal(emitter5);
     });
     it('will not remove item an already unsubscribed item', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter1 = {};
       var emitter3 = {};
-      bitcoind.subscriptions.hashblock= [emitter1];
-      bitcoind.unsubscribe('hashblock', emitter3);
-      bitcoind.subscriptions.hashblock.length.should.equal(1);
-      bitcoind.subscriptions.hashblock[0].should.equal(emitter1);
+        atbcoind.subscriptions.hashblock= [emitter1];
+        atbcoind.unsubscribe('hashblock', emitter3);
+        atbcoind.subscriptions.hashblock.length.should.equal(1);
+        atbcoind.subscriptions.hashblock[0].should.equal(emitter1);
     });
   });
 
@@ -220,33 +220,33 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('will not an invalid address', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter = new EventEmitter();
-      bitcoind.subscribeAddress(emitter, ['invalidaddress']);
-      should.not.exist(bitcoind.subscriptions.address['invalidaddress']);
+        atbcoind.subscribeAddress(emitter, ['invalidaddress']);
+      should.not.exist(atbcoind.subscriptions.address['invalidaddress']);
     });
     it('will add a valid address', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter = new EventEmitter();
-      bitcoind.subscribeAddress(emitter, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      should.exist(bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+        atbcoind.subscribeAddress(emitter, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+      should.exist(atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
     });
     it('will handle multiple address subscribers', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
-      bitcoind.subscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      bitcoind.subscribeAddress(emitter2, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      should.exist(bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(2);
+        atbcoind.subscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+        atbcoind.subscribeAddress(emitter2, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+      should.exist(atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(2);
     });
     it('will not add the same emitter twice', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter1 = new EventEmitter();
-      bitcoind.subscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      bitcoind.subscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      should.exist(bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
+        atbcoind.subscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+        atbcoind.subscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+      should.exist(atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
     });
   });
 
@@ -259,61 +259,61 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('it will remove a subscription', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
-      bitcoind.subscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      bitcoind.subscribeAddress(emitter2, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      should.exist(bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(2);
-      bitcoind.unsubscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
+        atbcoind.subscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+        atbcoind.subscribeAddress(emitter2, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+      should.exist(atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(2);
+        atbcoind.unsubscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
     });
     it('will unsubscribe subscriptions for an emitter', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
-      bitcoind.unsubscribeAddress(emitter1);
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
+        atbcoind.unsubscribeAddress(emitter1);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
     });
     it('will NOT unsubscribe subscription with missing address', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
-      bitcoind.unsubscribeAddress(emitter1, ['1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo']);
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(2);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
+        atbcoind.unsubscribeAddress(emitter1, ['1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo']);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(2);
     });
     it('will NOT unsubscribe subscription with missing emitter', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter2];
-      bitcoind.unsubscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'][0].should.equal(emitter2);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter2];
+        atbcoind.unsubscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'][0].should.equal(emitter2);
     });
     it('will remove empty addresses', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
-      bitcoind.unsubscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      bitcoind.unsubscribeAddress(emitter2, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
-      should.not.exist(bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
+        atbcoind.unsubscribeAddress(emitter1, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+        atbcoind.unsubscribeAddress(emitter2, ['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
+      should.not.exist(atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br']);
     });
     it('will unsubscribe emitter for all addresses', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
-      bitcoind.subscriptions.address['1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo'] = [emitter1, emitter2];
-      sinon.spy(bitcoind, 'unsubscribeAddressAll');
-      bitcoind.unsubscribeAddress(emitter1);
-      bitcoind.unsubscribeAddressAll.callCount.should.equal(1);
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
-      bitcoind.subscriptions.address['1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo'].length.should.equal(1);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
+        atbcoind.subscriptions.address['1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo'] = [emitter1, emitter2];
+      sinon.spy(atbcoind, 'unsubscribeAddressAll');
+        atbcoind.unsubscribeAddress(emitter1);
+        atbcoind.unsubscribeAddressAll.callCount.should.equal(1);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
+        atbcoind.subscriptions.address['1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo'].length.should.equal(1);
     });
   });
 
@@ -326,25 +326,25 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('will unsubscribe emitter for all addresses', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var emitter1 = new EventEmitter();
       var emitter2 = new EventEmitter();
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
-      bitcoind.subscriptions.address['1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo'] = [emitter1, emitter2];
-      bitcoind.subscriptions.address['mgY65WSfEmsyYaYPQaXhmXMeBhwp4EcsQW'] = [emitter2];
-      bitcoind.subscriptions.address['3CMNFxN1oHBc4R1EpboAL5yzHGgE611Xou'] = [emitter1];
-      bitcoind.unsubscribeAddress(emitter1);
-      bitcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
-      bitcoind.subscriptions.address['1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo'].length.should.equal(1);
-      bitcoind.subscriptions.address['mgY65WSfEmsyYaYPQaXhmXMeBhwp4EcsQW'].length.should.equal(1);
-      should.not.exist(bitcoind.subscriptions.address['3CMNFxN1oHBc4R1EpboAL5yzHGgE611Xou']);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'] = [emitter1, emitter2];
+        atbcoind.subscriptions.address['1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo'] = [emitter1, emitter2];
+        atbcoind.subscriptions.address['mgY65WSfEmsyYaYPQaXhmXMeBhwp4EcsQW'] = [emitter2];
+        atbcoind.subscriptions.address['3CMNFxN1oHBc4R1EpboAL5yzHGgE611Xou'] = [emitter1];
+        atbcoind.unsubscribeAddress(emitter1);
+        atbcoind.subscriptions.address['2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br'].length.should.equal(1);
+        atbcoind.subscriptions.address['1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo'].length.should.equal(1);
+        atbcoind.subscriptions.address['mgY65WSfEmsyYaYPQaXhmXMeBhwp4EcsQW'].length.should.equal(1);
+      should.not.exist(atbcoind.subscriptions.address['3CMNFxN1oHBc4R1EpboAL5yzHGgE611Xou']);
     });
   });
 
   describe('#_getDefaultConfig', function() {
     it('will generate config file from defaults', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      var config = bitcoind._getDefaultConfig();
+      var atbcoind = new BitcoinService(baseConfig);
+      var config = atbcoind._getDefaultConfig();
       config.should.equal(defaultBitcoinConf);
     });
   });
@@ -358,7 +358,7 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('will parse a bitcoin.conf file', function() {
-      var TestBitcoin = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoin = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFileSync: readFileSync,
           existsSync: sinon.stub().returns(true),
@@ -368,12 +368,12 @@ describe('Bitcoin Service', function() {
           sync: sinon.stub()
         }
       });
-      var bitcoind = new TestBitcoin(baseConfig);
-      bitcoind.options.spawn.datadir = '/tmp/.bitcoin';
+      var atbcoind = new TestBitcoin(baseConfig);
+        atbcoind.options.spawn.datadir = '/tmp/.bitcoin';
       var node = {};
-      bitcoind._loadSpawnConfiguration(node);
-      should.exist(bitcoind.spawn.config);
-      bitcoind.spawn.config.should.deep.equal({
+        atbcoind._loadSpawnConfiguration(node);
+      should.exist(atbcoind.spawn.config);
+        atbcoind.spawn.config.should.deep.equal({
         addressindex: 1,
         checkblocks: 144,
         dbcache: 8192,
@@ -394,7 +394,7 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will expand relative datadir to absolute path', function() {
-      var TestBitcoin = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoin = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFileSync: readFileSync,
           existsSync: sinon.stub().returns(true),
@@ -414,14 +414,14 @@ describe('Bitcoin Service', function() {
           exec: 'testpath'
         }
       };
-      var bitcoind = new TestBitcoin(config);
-      bitcoind.options.spawn.datadir = './data';
+      var atbcoind = new TestBitcoin(config);
+        atbcoind.options.spawn.datadir = './data';
       var node = {};
-      bitcoind._loadSpawnConfiguration(node);
-      bitcoind.options.spawn.datadir.should.equal('/tmp/.bitcore/data');
+        atbcoind._loadSpawnConfiguration(node);
+        atbcoind.options.spawn.datadir.should.equal('/tmp/.bitcore/data');
     });
     it('should throw an exception if txindex isn\'t enabled in the configuration', function() {
-      var TestBitcoin = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoin = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFileSync: sinon.stub().returns(fs.readFileSync(__dirname + '/../data/badbitcoin.conf')),
           existsSync: sinon.stub().returns(true),
@@ -430,16 +430,16 @@ describe('Bitcoin Service', function() {
           sync: sinon.stub()
         }
       });
-      var bitcoind = new TestBitcoin(baseConfig);
+      var atbcoind = new TestBitcoin(baseConfig);
       (function() {
-        bitcoind._loadSpawnConfiguration({datadir: './test'});
+        atbcoind._loadSpawnConfiguration({datadir: './test'});
       }).should.throw(bitcore.errors.InvalidState);
     });
     it('should NOT set https options if node https options are set', function() {
       var writeFileSync = function(path, config) {
         config.should.equal(defaultBitcoinConf);
       };
-      var TestBitcoin = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoin = proxyquire('../../lib/services/atbcoind', {
         fs: {
           writeFileSync: writeFileSync,
           readFileSync: readFileSync,
@@ -465,10 +465,10 @@ describe('Bitcoin Service', function() {
           exec: 'testexec'
         }
       };
-      var bitcoind = new TestBitcoin(config);
-      bitcoind.options.spawn.datadir = '/tmp/.bitcoin';
+      var atbcoind = new TestBitcoin(config);
+      atbcoind.options.spawn.datadir = '/tmp/.atbcoin';
       var node = {};
-      bitcoind._loadSpawnConfiguration(node);
+      atbcoind._loadSpawnConfiguration(node);
     });
   });
 
@@ -481,7 +481,7 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('should warn the user if reindex is set to 1 in the bitcoin.conf file', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var config = {
         txindex: 1,
         addressindex: 1,
@@ -492,12 +492,12 @@ describe('Bitcoin Service', function() {
         reindex: 1
       };
       var node = {};
-      bitcoind._checkConfigIndexes(config, node);
+      atbcoind._checkConfigIndexes(config, node);
       log.warn.callCount.should.equal(1);
       node._reindex.should.equal(true);
     });
     it('should warn if zmq port and hosts do not match', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var config = {
         txindex: 1,
         addressindex: 1,
@@ -509,113 +509,113 @@ describe('Bitcoin Service', function() {
       };
       var node = {};
       (function() {
-        bitcoind._checkConfigIndexes(config, node);
+        atbcoind._checkConfigIndexes(config, node);
       }).should.throw('"zmqpubrawtx" and "zmqpubhashblock"');
     });
   });
 
   describe('#_resetCaches', function() {
     it('will reset LRU caches', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var keys = [];
       for (var i = 0; i < 10; i++) {
         keys.push(crypto.randomBytes(32));
-        bitcoind.transactionDetailedCache.set(keys[i], {});
-        bitcoind.utxosCache.set(keys[i], {});
-        bitcoind.txidsCache.set(keys[i], {});
-        bitcoind.balanceCache.set(keys[i], {});
-        bitcoind.summaryCache.set(keys[i], {});
+        atbcoind.transactionDetailedCache.set(keys[i], {});
+        atbcoind.utxosCache.set(keys[i], {});
+        atbcoind.txidsCache.set(keys[i], {});
+        atbcoind.balanceCache.set(keys[i], {});
+        atbcoind.summaryCache.set(keys[i], {});
       }
-      bitcoind._resetCaches();
-      should.equal(bitcoind.transactionDetailedCache.get(keys[0]), undefined);
-      should.equal(bitcoind.utxosCache.get(keys[0]), undefined);
-      should.equal(bitcoind.txidsCache.get(keys[0]), undefined);
-      should.equal(bitcoind.balanceCache.get(keys[0]), undefined);
-      should.equal(bitcoind.summaryCache.get(keys[0]), undefined);
+      atbcoind._resetCaches();
+      should.equal(atbcoind.transactionDetailedCache.get(keys[0]), undefined);
+      should.equal(atbcoind.utxosCache.get(keys[0]), undefined);
+      should.equal(atbcoind.txidsCache.get(keys[0]), undefined);
+      should.equal(atbcoind.balanceCache.get(keys[0]), undefined);
+      should.equal(atbcoind.summaryCache.get(keys[0]), undefined);
     });
   });
 
   describe('#_tryAllClients', function() {
     it('will retry for each node client', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.tryAllInterval = 1;
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.tryAllInterval = 1;
+      atbcoind.nodes.push({
         client: {
           getInfo: sinon.stub().callsArgWith(0, new Error('test'))
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getInfo: sinon.stub().callsArgWith(0, new Error('test'))
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getInfo: sinon.stub().callsArg(0)
         }
       });
-      bitcoind._tryAllClients(function(client, next) {
+      atbcoind._tryAllClients(function(client, next) {
         client.getInfo(next);
       }, function(err) {
         if (err) {
           return done(err);
         }
-        bitcoind.nodes[0].client.getInfo.callCount.should.equal(1);
-        bitcoind.nodes[1].client.getInfo.callCount.should.equal(1);
-        bitcoind.nodes[2].client.getInfo.callCount.should.equal(1);
+        atbcoind.nodes[0].client.getInfo.callCount.should.equal(1);
+        atbcoind.nodes[1].client.getInfo.callCount.should.equal(1);
+        atbcoind.nodes[2].client.getInfo.callCount.should.equal(1);
         done();
       });
     });
     it('will start using the current node index (round-robin)', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.tryAllInterval = 1;
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.tryAllInterval = 1;
+      atbcoind.nodes.push({
         client: {
           getInfo: sinon.stub().callsArgWith(0, new Error('2'))
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getInfo: sinon.stub().callsArgWith(0, new Error('3'))
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getInfo: sinon.stub().callsArgWith(0, new Error('1'))
         }
       });
-      bitcoind.nodesIndex = 2;
-      bitcoind._tryAllClients(function(client, next) {
+      atbcoind.nodesIndex = 2;
+      atbcoind._tryAllClients(function(client, next) {
         client.getInfo(next);
       }, function(err) {
         err.should.be.instanceOf(Error);
         err.message.should.equal('3');
-        bitcoind.nodes[0].client.getInfo.callCount.should.equal(1);
-        bitcoind.nodes[1].client.getInfo.callCount.should.equal(1);
-        bitcoind.nodes[2].client.getInfo.callCount.should.equal(1);
-        bitcoind.nodesIndex.should.equal(2);
+        atbcoind.nodes[0].client.getInfo.callCount.should.equal(1);
+        atbcoind.nodes[1].client.getInfo.callCount.should.equal(1);
+        atbcoind.nodes[2].client.getInfo.callCount.should.equal(1);
+        atbcoind.nodesIndex.should.equal(2);
         done();
       });
     });
     it('will get error if all clients fail', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.tryAllInterval = 1;
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.tryAllInterval = 1;
+      atbcoind.nodes.push({
         client: {
           getInfo: sinon.stub().callsArgWith(0, new Error('test'))
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getInfo: sinon.stub().callsArgWith(0, new Error('test'))
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getInfo: sinon.stub().callsArgWith(0, new Error('test'))
         }
       });
-      bitcoind._tryAllClients(function(client, next) {
+      atbcoind._tryAllClients(function(client, next) {
         client.getInfo(next);
       }, function(err) {
         should.exist(err);
@@ -628,8 +628,8 @@ describe('Bitcoin Service', function() {
 
   describe('#_wrapRPCError', function() {
     it('will convert atbcoind-rpc error object into JavaScript error', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      var error = bitcoind._wrapRPCError({message: 'Test error', code: -1});
+      var atbcoind = new BitcoinService(baseConfig);
+      var error = atbcoind._wrapRPCError({message: 'Test error', code: -1});
       error.should.be.an.instanceof(errors.RPCError);
       error.code.should.equal(-1);
       error.message.should.equal('Test error');
@@ -645,10 +645,10 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('will set height and genesis buffer', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var genesisBuffer = new Buffer([]);
-      bitcoind.getRawBlock = sinon.stub().callsArgWith(1, null, genesisBuffer);
-      bitcoind.nodes.push({
+      atbcoind.getRawBlock = sinon.stub().callsArgWith(1, null, genesisBuffer);
+      atbcoind.nodes.push({
         client: {
           getBestBlockHash: function(callback) {
             callback(null, {
@@ -671,45 +671,45 @@ describe('Bitcoin Service', function() {
           }
         }
       });
-      bitcoind._initChain(function() {
+      atbcoind._initChain(function() {
         log.info.callCount.should.equal(1);
-        bitcoind.getRawBlock.callCount.should.equal(1);
-        bitcoind.getRawBlock.args[0][0].should.equal('genesishash');
-        bitcoind.height.should.equal(5000);
-        bitcoind.genesisBuffer.should.equal(genesisBuffer);
+        atbcoind.getRawBlock.callCount.should.equal(1);
+        atbcoind.getRawBlock.args[0][0].should.equal('genesishash');
+        atbcoind.height.should.equal(5000);
+        atbcoind.genesisBuffer.should.equal(genesisBuffer);
         done();
       });
     });
     it('it will handle error from getBestBlockHash', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, {code: -1, message: 'error'});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBestBlockHash: getBestBlockHash
         }
       });
-      bitcoind._initChain(function(err) {
+      atbcoind._initChain(function(err) {
         err.should.be.instanceOf(Error);
         done();
       });
     });
     it('it will handle error from getBlock', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {});
       var getBlock = sinon.stub().callsArgWith(1, {code: -1, message: 'error'});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBestBlockHash: getBestBlockHash,
           getBlock: getBlock
         }
       });
-      bitcoind._initChain(function(err) {
+      atbcoind._initChain(function(err) {
         err.should.be.instanceOf(Error);
         done();
       });
     });
     it('it will handle error from getBlockHash', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {});
       var getBlock = sinon.stub().callsArgWith(1, null, {
         result: {
@@ -717,20 +717,20 @@ describe('Bitcoin Service', function() {
         }
       });
       var getBlockHash = sinon.stub().callsArgWith(1, {code: -1, message: 'error'});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBestBlockHash: getBestBlockHash,
           getBlock: getBlock,
           getBlockHash: getBlockHash
         }
       });
-      bitcoind._initChain(function(err) {
+      atbcoind._initChain(function(err) {
         err.should.be.instanceOf(Error);
         done();
       });
     });
     it('it will handle error from getRawBlock', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {});
       var getBlock = sinon.stub().callsArgWith(1, null, {
         result: {
@@ -738,15 +738,15 @@ describe('Bitcoin Service', function() {
         }
       });
       var getBlockHash = sinon.stub().callsArgWith(1, null, {});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBestBlockHash: getBestBlockHash,
           getBlock: getBlock,
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.getRawBlock = sinon.stub().callsArgWith(1, new Error('test'));
-      bitcoind._initChain(function(err) {
+      atbcoind.getRawBlock = sinon.stub().callsArgWith(1, new Error('test'));
+      atbcoind._initChain(function(err) {
         err.should.be.instanceOf(Error);
         done();
       });
@@ -768,8 +768,8 @@ describe('Bitcoin Service', function() {
           exec: 'testpath'
         }
       };
-      var bitcoind = new BitcoinService(config);
-      bitcoind._getDefaultConf().rpcport.should.equal(8332);
+      var atbcoind = new BitcoinService(config);
+      atbcoind._getDefaultConf().rpcport.should.equal(8332);
     });
     it('will get default rpc port for testnet', function() {
       var config = {
@@ -781,8 +781,8 @@ describe('Bitcoin Service', function() {
           exec: 'testpath'
         }
       };
-      var bitcoind = new BitcoinService(config);
-      bitcoind._getDefaultConf().rpcport.should.equal(18332);
+      var atbcoind = new BitcoinService(config);
+      atbcoind._getDefaultConf().rpcport.should.equal(18332);
     });
     it('will get default rpc port for regtest', function() {
       bitcore.Networks.enableRegtest();
@@ -795,8 +795,8 @@ describe('Bitcoin Service', function() {
           exec: 'testpath'
         }
       };
-      var bitcoind = new BitcoinService(config);
-      bitcoind._getDefaultConf().rpcport.should.equal(18332);
+      var atbcoind = new BitcoinService(config);
+      atbcoind._getDefaultConf().rpcport.should.equal(18332);
     });
   });
 
@@ -815,8 +815,8 @@ describe('Bitcoin Service', function() {
           exec: 'testpath'
         }
       };
-      var bitcoind = new BitcoinService(config);
-      should.equal(bitcoind._getNetworkConfigPath(), undefined);
+      var atbcoind = new BitcoinService(config);
+      should.equal(atbcoind._getNetworkConfigPath(), undefined);
     });
     it('will get default rpc port for testnet', function() {
       var config = {
@@ -828,8 +828,8 @@ describe('Bitcoin Service', function() {
           exec: 'testpath'
         }
       };
-      var bitcoind = new BitcoinService(config);
-      bitcoind._getNetworkConfigPath().should.equal('testnet3/bitcoin.conf');
+      var atbcoind = new BitcoinService(config);
+      atbcoind._getNetworkConfigPath().should.equal('testnet3/bitcoin.conf');
     });
     it('will get default rpc port for regtest', function() {
       bitcore.Networks.enableRegtest();
@@ -842,8 +842,8 @@ describe('Bitcoin Service', function() {
           exec: 'testpath'
         }
       };
-      var bitcoind = new BitcoinService(config);
-      bitcoind._getNetworkConfigPath().should.equal('regtest/bitcoin.conf');
+      var atbcoind = new BitcoinService(config);
+      atbcoind._getNetworkConfigPath().should.equal('regtest/bitcoin.conf');
     });
   });
 
@@ -853,78 +853,78 @@ describe('Bitcoin Service', function() {
       baseConfig.node.network = bitcore.Networks.testnet;
     });
     it('return --testnet for testnet', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.node.network = bitcore.Networks.testnet;
-      bitcoind._getNetworkOption().should.equal('--testnet');
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.node.network = bitcore.Networks.testnet;
+      atbcoind._getNetworkOption().should.equal('--testnet');
     });
     it('return --regtest for testnet', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.node.network = bitcore.Networks.testnet;
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.node.network = bitcore.Networks.testnet;
       bitcore.Networks.enableRegtest();
-      bitcoind._getNetworkOption().should.equal('--regtest');
+      atbcoind._getNetworkOption().should.equal('--regtest');
     });
     it('return undefined for livenet', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.node.network = bitcore.Networks.livenet;
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.node.network = bitcore.Networks.livenet;
       bitcore.Networks.enableRegtest();
-      should.equal(bitcoind._getNetworkOption(), undefined);
+      should.equal(atbcoind._getNetworkOption(), undefined);
     });
   });
 
   describe('#_zmqBlockHandler', function() {
     it('will emit block', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var node = {};
       var message = new Buffer('00000000002e08fc7ae9a9aa5380e95e2adcdc5752a4a66a7d3a22466bd4e6aa', 'hex');
-      bitcoind._rapidProtectedUpdateTip = sinon.stub();
-      bitcoind.on('block', function(block) {
+      atbcoind._rapidProtectedUpdateTip = sinon.stub();
+      atbcoind.on('block', function(block) {
         block.should.equal(message);
         done();
       });
-      bitcoind._zmqBlockHandler(node, message);
+      atbcoind._zmqBlockHandler(node, message);
     });
     it('will not emit same block twice', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var node = {};
       var message = new Buffer('00000000002e08fc7ae9a9aa5380e95e2adcdc5752a4a66a7d3a22466bd4e6aa', 'hex');
-      bitcoind._rapidProtectedUpdateTip = sinon.stub();
-      bitcoind.on('block', function(block) {
+      atbcoind._rapidProtectedUpdateTip = sinon.stub();
+      atbcoind.on('block', function(block) {
         block.should.equal(message);
         done();
       });
-      bitcoind._zmqBlockHandler(node, message);
-      bitcoind._zmqBlockHandler(node, message);
+      atbcoind._zmqBlockHandler(node, message);
+      atbcoind._zmqBlockHandler(node, message);
     });
     it('will call function to update tip', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var node = {};
       var message = new Buffer('00000000002e08fc7ae9a9aa5380e95e2adcdc5752a4a66a7d3a22466bd4e6aa', 'hex');
-      bitcoind._rapidProtectedUpdateTip = sinon.stub();
-      bitcoind._zmqBlockHandler(node, message);
-      bitcoind._rapidProtectedUpdateTip.callCount.should.equal(1);
-      bitcoind._rapidProtectedUpdateTip.args[0][0].should.equal(node);
-      bitcoind._rapidProtectedUpdateTip.args[0][1].should.equal(message);
+      atbcoind._rapidProtectedUpdateTip = sinon.stub();
+      atbcoind._zmqBlockHandler(node, message);
+      atbcoind._rapidProtectedUpdateTip.callCount.should.equal(1);
+      atbcoind._rapidProtectedUpdateTip.args[0][0].should.equal(node);
+      atbcoind._rapidProtectedUpdateTip.args[0][1].should.equal(message);
     });
     it('will emit to subscribers', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var node = {};
       var message = new Buffer('00000000002e08fc7ae9a9aa5380e95e2adcdc5752a4a66a7d3a22466bd4e6aa', 'hex');
-      bitcoind._rapidProtectedUpdateTip = sinon.stub();
+      atbcoind._rapidProtectedUpdateTip = sinon.stub();
       var emitter = new EventEmitter();
-      bitcoind.subscriptions.hashblock.push(emitter);
-      emitter.on('bitcoind/hashblock', function(blockHash) {
+      atbcoind.subscriptions.hashblock.push(emitter);
+      emitter.on('atbcoind/hashblock', function(blockHash) {
         blockHash.should.equal(message.toString('hex'));
         done();
       });
-      bitcoind._zmqBlockHandler(node, message);
+      atbcoind._zmqBlockHandler(node, message);
     });
   });
 
   describe('#_rapidProtectedUpdateTip', function() {
     it('will limit tip updates with rapid calls', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var callCount = 0;
-      bitcoind._updateTip = function() {
+      atbcoind._updateTip = function() {
         callCount++;
         callCount.should.be.within(1, 2);
         if (callCount > 1) {
@@ -935,7 +935,7 @@ describe('Bitcoin Service', function() {
       var message = new Buffer('00000000002e08fc7ae9a9aa5380e95e2adcdc5752a4a66a7d3a22466bd4e6aa', 'hex');
       var count = 0;
       function repeat() {
-        bitcoind._rapidProtectedUpdateTip(node, message);
+        atbcoind._rapidProtectedUpdateTip(node, message);
         count++;
         if (count < 50) {
           repeat();
@@ -956,9 +956,9 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('log and emit rpc error from get block', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.syncPercentage = sinon.stub();
-      bitcoind.on('error', function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.syncPercentage = sinon.stub();
+      atbcoind.on('error', function(err) {
         err.code.should.equal(-1);
         err.message.should.equal('Test error');
         log.error.callCount.should.equal(1);
@@ -969,12 +969,12 @@ describe('Bitcoin Service', function() {
           getBlock: sinon.stub().callsArgWith(1, {message: 'Test error', code: -1})
         }
       };
-      bitcoind._updateTip(node, message);
+      atbcoind._updateTip(node, message);
     });
     it('emit synced if percentage is 100', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.syncPercentage = sinon.stub().callsArgWith(0, null, 100);
-      bitcoind.on('synced', function() {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.syncPercentage = sinon.stub().callsArgWith(0, null, 100);
+      atbcoind.on('synced', function() {
         done();
       });
       var node = {
@@ -982,12 +982,12 @@ describe('Bitcoin Service', function() {
           getBlock: sinon.stub()
         }
       };
-      bitcoind._updateTip(node, message);
+      atbcoind._updateTip(node, message);
     });
     it('NOT emit synced if percentage is less than 100', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.syncPercentage = sinon.stub().callsArgWith(0, null, 99);
-      bitcoind.on('synced', function() {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.syncPercentage = sinon.stub().callsArgWith(0, null, 99);
+      atbcoind.on('synced', function() {
         throw new Error('Synced called');
       });
       var node = {
@@ -995,14 +995,14 @@ describe('Bitcoin Service', function() {
           getBlock: sinon.stub()
         }
       };
-      bitcoind._updateTip(node, message);
+      atbcoind._updateTip(node, message);
       log.info.callCount.should.equal(1);
       done();
     });
     it('log and emit error from syncPercentage', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.syncPercentage = sinon.stub().callsArgWith(0, new Error('test'));
-      bitcoind.on('error', function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.syncPercentage = sinon.stub().callsArgWith(0, new Error('test'));
+      atbcoind.on('error', function(err) {
         log.error.callCount.should.equal(1);
         err.message.should.equal('test');
         done();
@@ -1012,16 +1012,16 @@ describe('Bitcoin Service', function() {
           getBlock: sinon.stub()
         }
       };
-      bitcoind._updateTip(node, message);
+      atbcoind._updateTip(node, message);
     });
     it('reset caches and set height', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.syncPercentage = sinon.stub();
-      bitcoind._resetCaches = sinon.stub();
-      bitcoind.on('tip', function(height) {
-        bitcoind._resetCaches.callCount.should.equal(1);
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.syncPercentage = sinon.stub();
+      atbcoind._resetCaches = sinon.stub();
+      atbcoind.on('tip', function(height) {
+        atbcoind._resetCaches.callCount.should.equal(1);
         height.should.equal(10);
-        bitcoind.height.should.equal(10);
+        atbcoind.height.should.equal(10);
         done();
       });
       var node = {
@@ -1033,13 +1033,13 @@ describe('Bitcoin Service', function() {
           })
         }
       };
-      bitcoind._updateTip(node, message);
+      atbcoind._updateTip(node, message);
     });
     it('will NOT update twice for the same hash', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.syncPercentage = sinon.stub();
-      bitcoind._resetCaches = sinon.stub();
-      bitcoind.on('tip', function() {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.syncPercentage = sinon.stub();
+      atbcoind._resetCaches = sinon.stub();
+      atbcoind.on('tip', function() {
         done();
       });
       var node = {
@@ -1051,8 +1051,8 @@ describe('Bitcoin Service', function() {
           })
         }
       };
-      bitcoind._updateTip(node, message);
-      bitcoind._updateTip(node, message);
+      atbcoind._updateTip(node, message);
+      atbcoind._updateTip(node, message);
     });
     it('will not call syncPercentage if node is stopping', function(done) {
       var config = {
@@ -1064,10 +1064,10 @@ describe('Bitcoin Service', function() {
           exec: 'testpath'
         }
       };
-      var bitcoind = new BitcoinService(config);
-      bitcoind.syncPercentage = sinon.stub();
-      bitcoind._resetCaches = sinon.stub();
-      bitcoind.node.stopping = true;
+      var atbcoind = new BitcoinService(config);
+      atbcoind.syncPercentage = sinon.stub();
+      atbcoind._resetCaches = sinon.stub();
+      atbcoind.node.stopping = true;
       var node = {
         client: {
           getBlock: sinon.stub().callsArgWith(1, null, {
@@ -1077,17 +1077,17 @@ describe('Bitcoin Service', function() {
           })
         }
       };
-      bitcoind.on('tip', function() {
-        bitcoind.syncPercentage.callCount.should.equal(0);
+      atbcoind.on('tip', function() {
+        atbcoind.syncPercentage.callCount.should.equal(0);
         done();
       });
-      bitcoind._updateTip(node, message);
+      atbcoind._updateTip(node, message);
     });
   });
 
   describe('#_getAddressesFromTransaction', function() {
     it('will get results using bitcore.Transaction', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var wif = 'L2Gkw3kKJ6N24QcDuH4XDqt9cTqsKTVNDGz1CRZhk9cq4auDUbJy';
       var privkey = bitcore.PrivateKey.fromWIF(wif);
       var inputAddress = privkey.toAddress(bitcore.Networks.testnet);
@@ -1102,13 +1102,13 @@ describe('Bitcoin Service', function() {
       });
       tx.to(outputAddress, 5000000000);
       tx.sign(privkey);
-      var addresses = bitcoind._getAddressesFromTransaction(tx);
+      var addresses = atbcoind._getAddressesFromTransaction(tx);
       addresses.length.should.equal(2);
       addresses[0].should.equal(inputAddress.toString());
       addresses[1].should.equal(outputAddress.toString());
     });
     it('will handle non-standard script types', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var tx = bitcore.Transaction();
       tx.addInput(bitcore.Transaction.Input({
         prevTxId: '4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b',
@@ -1123,21 +1123,21 @@ describe('Bitcoin Service', function() {
         script: bitcore.Script('OP_TRUE'),
         satoshis: 5000000000
       }));
-      var addresses = bitcoind._getAddressesFromTransaction(tx);
+      var addresses = atbcoind._getAddressesFromTransaction(tx);
       addresses.length.should.equal(0);
     });
     it('will handle unparsable script types or missing input script', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var tx = bitcore.Transaction();
       tx.addOutput(bitcore.Transaction.Output({
         script: new Buffer('4c', 'hex'),
         satoshis: 5000000000
       }));
-      var addresses = bitcoind._getAddressesFromTransaction(tx);
+      var addresses = atbcoind._getAddressesFromTransaction(tx);
       addresses.length.should.equal(0);
     });
     it('will return unique values', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var tx = bitcore.Transaction();
       var address = bitcore.Address('2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br');
       tx.addOutput(bitcore.Transaction.Output({
@@ -1148,88 +1148,88 @@ describe('Bitcoin Service', function() {
         script: bitcore.Script(address),
         satoshis: 5000000000
       }));
-      var addresses = bitcoind._getAddressesFromTransaction(tx);
+      var addresses = atbcoind._getAddressesFromTransaction(tx);
       addresses.length.should.equal(1);
     });
   });
 
   describe('#_notifyAddressTxidSubscribers', function() {
     it('will emit event if matching addresses', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind._getAddressesFromTransaction = sinon.stub().returns([address]);
+      atbcoind._getAddressesFromTransaction = sinon.stub().returns([address]);
       var emitter = new EventEmitter();
-      bitcoind.subscriptions.address[address] = [emitter];
+      atbcoind.subscriptions.address[address] = [emitter];
       var txid = '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0';
       var transaction = {};
-      emitter.on('bitcoind/addresstxid', function(data) {
+      emitter.on('atbcoind/addresstxid', function(data) {
         data.address.should.equal(address);
         data.txid.should.equal(txid);
         done();
       });
       sinon.spy(emitter, 'emit');
-      bitcoind._notifyAddressTxidSubscribers(txid, transaction);
+      atbcoind._notifyAddressTxidSubscribers(txid, transaction);
       emitter.emit.callCount.should.equal(1);
     });
     it('will NOT emit event without matching addresses', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind._getAddressesFromTransaction = sinon.stub().returns([address]);
+      atbcoind._getAddressesFromTransaction = sinon.stub().returns([address]);
       var emitter = new EventEmitter();
       var txid = '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0';
       var transaction = {};
       emitter.emit = sinon.stub();
-      bitcoind._notifyAddressTxidSubscribers(txid, transaction);
+      atbcoind._notifyAddressTxidSubscribers(txid, transaction);
       emitter.emit.callCount.should.equal(0);
     });
   });
 
   describe('#_zmqTransactionHandler', function() {
     it('will emit to subscribers', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var expectedBuffer = new Buffer(txhex, 'hex');
       var emitter = new EventEmitter();
-      bitcoind.subscriptions.rawtransaction.push(emitter);
-      emitter.on('bitcoind/rawtransaction', function(hex) {
+      atbcoind.subscriptions.rawtransaction.push(emitter);
+      emitter.on('atbcoind/rawtransaction', function(hex) {
         hex.should.be.a('string');
         hex.should.equal(expectedBuffer.toString('hex'));
         done();
       });
       var node = {};
-      bitcoind._zmqTransactionHandler(node, expectedBuffer);
+      atbcoind._zmqTransactionHandler(node, expectedBuffer);
     });
     it('will NOT emit to subscribers more than once for the same tx', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var expectedBuffer = new Buffer(txhex, 'hex');
       var emitter = new EventEmitter();
-      bitcoind.subscriptions.rawtransaction.push(emitter);
-      emitter.on('bitcoind/rawtransaction', function() {
+      atbcoind.subscriptions.rawtransaction.push(emitter);
+      emitter.on('atbcoind/rawtransaction', function() {
         done();
       });
       var node = {};
-      bitcoind._zmqTransactionHandler(node, expectedBuffer);
-      bitcoind._zmqTransactionHandler(node, expectedBuffer);
+      atbcoind._zmqTransactionHandler(node, expectedBuffer);
+      atbcoind._zmqTransactionHandler(node, expectedBuffer);
     });
     it('will emit "tx" event', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var expectedBuffer = new Buffer(txhex, 'hex');
-      bitcoind.on('tx', function(buffer) {
+      atbcoind.on('tx', function(buffer) {
         buffer.should.be.instanceof(Buffer);
         buffer.toString('hex').should.equal(expectedBuffer.toString('hex'));
         done();
       });
       var node = {};
-      bitcoind._zmqTransactionHandler(node, expectedBuffer);
+      atbcoind._zmqTransactionHandler(node, expectedBuffer);
     });
     it('will NOT emit "tx" event more than once for the same tx', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var expectedBuffer = new Buffer(txhex, 'hex');
-      bitcoind.on('tx', function() {
+      atbcoind.on('tx', function() {
         done();
       });
       var node = {};
-      bitcoind._zmqTransactionHandler(node, expectedBuffer);
-      bitcoind._zmqTransactionHandler(node, expectedBuffer);
+      atbcoind._zmqTransactionHandler(node, expectedBuffer);
+      atbcoind._zmqTransactionHandler(node, expectedBuffer);
     });
   });
 
@@ -1242,11 +1242,11 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('log errors, update tip and subscribe to zmq events', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._updateTip = sinon.stub();
-      bitcoind._subscribeZmqEvents = sinon.stub();
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._updateTip = sinon.stub();
+      atbcoind._subscribeZmqEvents = sinon.stub();
       var blockEvents = 0;
-      bitcoind.on('block', function() {
+      atbcoind.on('block', function() {
         blockEvents++;
       });
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {
@@ -1277,12 +1277,12 @@ describe('Bitcoin Service', function() {
           getBlockchainInfo: getBlockchainInfo
         }
       };
-      bitcoind._checkSyncedAndSubscribeZmqEvents(node);
+      atbcoind._checkSyncedAndSubscribeZmqEvents(node);
       setTimeout(function() {
         log.error.callCount.should.equal(2);
         blockEvents.should.equal(11);
-        bitcoind._updateTip.callCount.should.equal(11);
-        bitcoind._subscribeZmqEvents.callCount.should.equal(1);
+        atbcoind._updateTip.callCount.should.equal(11);
+        atbcoind._subscribeZmqEvents.callCount.should.equal(1);
         done();
       }, 200);
     });
@@ -1296,7 +1296,7 @@ describe('Bitcoin Service', function() {
           exec: 'testpath'
         }
       };
-      var bitcoind = new BitcoinService(config);
+      var atbcoind = new BitcoinService(config);
       var getBestBlockHash = sinon.stub().callsArgWith(0, {code: -1, message: 'error'});
       var node = {
         _tipUpdateInterval: 1,
@@ -1304,9 +1304,9 @@ describe('Bitcoin Service', function() {
           getBestBlockHash: getBestBlockHash
         }
       };
-      bitcoind._checkSyncedAndSubscribeZmqEvents(node);
+      atbcoind._checkSyncedAndSubscribeZmqEvents(node);
       setTimeout(function() {
-        bitcoind.node.stopping = true;
+        atbcoind.node.stopping = true;
         var count = getBestBlockHash.callCount;
         setTimeout(function() {
           getBestBlockHash.callCount.should.equal(count);
@@ -1315,9 +1315,9 @@ describe('Bitcoin Service', function() {
       }, 100);
     });
     it('will not set interval if synced is true', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._updateTip = sinon.stub();
-      bitcoind._subscribeZmqEvents = sinon.stub();
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._updateTip = sinon.stub();
+      atbcoind._subscribeZmqEvents = sinon.stub();
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {
         result: '00000000000000001bb82a7f5973618cfd3185ba1ded04dd852a653f92a27c45'
       });
@@ -1334,7 +1334,7 @@ describe('Bitcoin Service', function() {
           getBlockchainInfo: getBlockchainInfo
         }
       };
-      bitcoind._checkSyncedAndSubscribeZmqEvents(node);
+      atbcoind._checkSyncedAndSubscribeZmqEvents(node);
       setTimeout(function() {
         getBestBlockHash.callCount.should.equal(1);
         getBlockchainInfo.callCount.should.equal(1);
@@ -1345,28 +1345,28 @@ describe('Bitcoin Service', function() {
 
   describe('#_subscribeZmqEvents', function() {
     it('will call subscribe on zmq socket', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var node = {
         zmqSubSocket: {
           subscribe: sinon.stub(),
           on: sinon.stub()
         }
       };
-      bitcoind._subscribeZmqEvents(node);
+      atbcoind._subscribeZmqEvents(node);
       node.zmqSubSocket.subscribe.callCount.should.equal(2);
       node.zmqSubSocket.subscribe.args[0][0].should.equal('hashblock');
       node.zmqSubSocket.subscribe.args[1][0].should.equal('rawtx');
     });
     it('will call relevant handler for rawtx topics', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._zmqTransactionHandler = sinon.stub();
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._zmqTransactionHandler = sinon.stub();
       var node = {
         zmqSubSocket: new EventEmitter()
       };
       node.zmqSubSocket.subscribe = sinon.stub();
-      bitcoind._subscribeZmqEvents(node);
+      atbcoind._subscribeZmqEvents(node);
       node.zmqSubSocket.on('message', function() {
-        bitcoind._zmqTransactionHandler.callCount.should.equal(1);
+        atbcoind._zmqTransactionHandler.callCount.should.equal(1);
         done();
       });
       var topic = new Buffer('rawtx', 'utf8');
@@ -1374,15 +1374,15 @@ describe('Bitcoin Service', function() {
       node.zmqSubSocket.emit('message', topic, message);
     });
     it('will call relevant handler for hashblock topics', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._zmqBlockHandler = sinon.stub();
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._zmqBlockHandler = sinon.stub();
       var node = {
         zmqSubSocket: new EventEmitter()
       };
       node.zmqSubSocket.subscribe = sinon.stub();
-      bitcoind._subscribeZmqEvents(node);
+      atbcoind._subscribeZmqEvents(node);
       node.zmqSubSocket.on('message', function() {
-        bitcoind._zmqBlockHandler.callCount.should.equal(1);
+        atbcoind._zmqBlockHandler.callCount.should.equal(1);
         done();
       });
       var topic = new Buffer('hashblock', 'utf8');
@@ -1390,17 +1390,17 @@ describe('Bitcoin Service', function() {
       node.zmqSubSocket.emit('message', topic, message);
     });
     it('will ignore unknown topic types', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._zmqBlockHandler = sinon.stub();
-      bitcoind._zmqTransactionHandler = sinon.stub();
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._zmqBlockHandler = sinon.stub();
+      atbcoind._zmqTransactionHandler = sinon.stub();
       var node = {
         zmqSubSocket: new EventEmitter()
       };
       node.zmqSubSocket.subscribe = sinon.stub();
-      bitcoind._subscribeZmqEvents(node);
+      atbcoind._subscribeZmqEvents(node);
       node.zmqSubSocket.on('message', function() {
-        bitcoind._zmqBlockHandler.callCount.should.equal(0);
-        bitcoind._zmqTransactionHandler.callCount.should.equal(0);
+        atbcoind._zmqBlockHandler.callCount.should.equal(0);
+        atbcoind._zmqTransactionHandler.callCount.should.equal(0);
         done();
       });
       var topic = new Buffer('unknown', 'utf8');
@@ -1417,14 +1417,14 @@ describe('Bitcoin Service', function() {
       var socketFunc = function() {
         return socket;
       };
-      var BitcoinService = proxyquire('../../lib/services/bitcoind', {
+      var BitcoinService = proxyquire('../../lib/services/atbcoind', {
         zmq: {
           socket: socketFunc
         }
       });
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var node = {};
-      bitcoind._initZmqSubSocket(node, 'url');
+      atbcoind._initZmqSubSocket(node, 'url');
       node.zmqSubSocket.should.equal(socket);
       socket.connect.callCount.should.equal(1);
       socket.connect.args[0][0].should.equal('url');
@@ -1443,7 +1443,7 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('give error from client getblockchaininfo', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var node = {
         _reindex: true,
         _reindexWait: 1,
@@ -1451,14 +1451,14 @@ describe('Bitcoin Service', function() {
           getBlockchainInfo: sinon.stub().callsArgWith(0, {code: -1 , message: 'Test error'})
         }
       };
-      bitcoind._checkReindex(node, function(err) {
+      atbcoind._checkReindex(node, function(err) {
         should.exist(err);
         err.should.be.instanceof(errors.RPCError);
         done();
       });
     });
     it('will wait until sync is 100 percent', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var percent = 0.89;
       var node = {
         _reindex: true,
@@ -1474,18 +1474,18 @@ describe('Bitcoin Service', function() {
           }
         }
       };
-      bitcoind._checkReindex(node, function() {
+      atbcoind._checkReindex(node, function() {
         node._reindex.should.equal(false);
         log.info.callCount.should.equal(11);
         done();
       });
     });
     it('will call callback if reindex is not enabled', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var node = {
         _reindex: false
       };
-      bitcoind._checkReindex(node, function() {
+      atbcoind._checkReindex(node, function() {
         node._reindex.should.equal(false);
         done();
       });
@@ -1501,21 +1501,21 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('will give rpc from client getbestblockhash', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, {code: -1, message: 'Test error'});
       var node = {
         client: {
           getBestBlockHash: getBestBlockHash
         }
       };
-      bitcoind._loadTipFromNode(node, function(err) {
+      atbcoind._loadTipFromNode(node, function(err) {
         err.should.be.instanceof(Error);
         log.warn.callCount.should.equal(0);
         done();
       });
     });
     it('will give rpc from client getblock', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {
         result: '00000000000000001bb82a7f5973618cfd3185ba1ded04dd852a653f92a27c45'
       });
@@ -1526,7 +1526,7 @@ describe('Bitcoin Service', function() {
           getBlock: getBlock
         }
       };
-      bitcoind._loadTipFromNode(node, function(err) {
+      atbcoind._loadTipFromNode(node, function(err) {
         getBlock.args[0][0].should.equal('00000000000000001bb82a7f5973618cfd3185ba1ded04dd852a653f92a27c45');
         err.should.be.instanceof(Error);
         log.warn.callCount.should.equal(0);
@@ -1534,21 +1534,21 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will log when error is RPC_IN_WARMUP', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, {code: -28, message: 'Verifying blocks...'});
       var node = {
         client: {
           getBestBlockHash: getBestBlockHash
         }
       };
-      bitcoind._loadTipFromNode(node, function(err) {
+      atbcoind._loadTipFromNode(node, function(err) {
         err.should.be.instanceof(Error);
         log.warn.callCount.should.equal(1);
         done();
       });
     });
     it('will set height and emit tip', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {
         result: '00000000000000001bb82a7f5973618cfd3185ba1ded04dd852a653f92a27c45'
       });
@@ -1563,12 +1563,12 @@ describe('Bitcoin Service', function() {
           getBlock: getBlock
         }
       };
-      bitcoind.on('tip', function(height) {
+      atbcoind.on('tip', function(height) {
         height.should.equal(100);
-        bitcoind.height.should.equal(100);
+        atbcoind.height.should.equal(100);
         done();
       });
-      bitcoind._loadTipFromNode(node, function(err) {
+      atbcoind._loadTipFromNode(node, function(err) {
         if (err) {
           return done(err);
         }
@@ -1590,20 +1590,20 @@ describe('Bitcoin Service', function() {
       var error = new Error('Test error');
       error.code = 'ENOENT';
       readFile.onCall(1).callsArgWith(2, error);
-      var TestBitcoinService = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoinService = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFile: readFile
         }
       });
-      var bitcoind = new TestBitcoinService(baseConfig);
-      bitcoind.spawnStopTime = 1;
-      bitcoind._process = {};
-      bitcoind._process.kill = sinon.stub();
-      bitcoind._stopSpawnedBitcoin(function(err) {
+      var atbcoind = new TestBitcoinService(baseConfig);
+      atbcoind.spawnStopTime = 1;
+      atbcoind._process = {};
+      atbcoind._process.kill = sinon.stub();
+      atbcoind._stopSpawnedBitcoin(function(err) {
         if (err) {
           return done(err);
         }
-        bitcoind._process.kill.callCount.should.equal(1);
+        atbcoind._process.kill.callCount.should.equal(1);
         log.warn.callCount.should.equal(1);
         done();
       });
@@ -1614,22 +1614,22 @@ describe('Bitcoin Service', function() {
       var error = new Error('Test error');
       error.code = 'ENOENT';
       readFile.onCall(1).callsArgWith(2, error);
-      var TestBitcoinService = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoinService = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFile: readFile
         }
       });
-      var bitcoind = new TestBitcoinService(baseConfig);
-      bitcoind.spawnStopTime = 1;
-      bitcoind._process = {};
+      var atbcoind = new TestBitcoinService(baseConfig);
+      atbcoind.spawnStopTime = 1;
+      atbcoind._process = {};
       var error2 = new Error('Test error');
       error2.code = 'ESRCH';
-      bitcoind._process.kill = sinon.stub().throws(error2);
-      bitcoind._stopSpawnedBitcoin(function(err) {
+      atbcoind._process.kill = sinon.stub().throws(error2);
+      atbcoind._stopSpawnedBitcoin(function(err) {
         if (err) {
           return done(err);
         }
-        bitcoind._process.kill.callCount.should.equal(1);
+        atbcoind._process.kill.callCount.should.equal(1);
         log.warn.callCount.should.equal(2);
         done();
       });
@@ -1637,16 +1637,16 @@ describe('Bitcoin Service', function() {
     it('it will attempt to kill process with NaN', function(done) {
       var readFile = sandbox.stub();
       readFile.onCall(0).callsArgWith(2, null, '     ');
-      var TestBitcoinService = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoinService = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFile: readFile
         }
       });
-      var bitcoind = new TestBitcoinService(baseConfig);
-      bitcoind.spawnStopTime = 1;
-      bitcoind._process = {};
-      bitcoind._process.kill = sinon.stub();
-      bitcoind._stopSpawnedBitcoin(function(err) {
+      var atbcoind = new TestBitcoinService(baseConfig);
+      atbcoind.spawnStopTime = 1;
+      atbcoind._process = {};
+      atbcoind._process.kill = sinon.stub();
+      atbcoind._stopSpawnedBitcoin(function(err) {
         if (err) {
           return done(err);
         }
@@ -1656,16 +1656,16 @@ describe('Bitcoin Service', function() {
     it('it will attempt to kill process without pid', function(done) {
       var readFile = sandbox.stub();
       readFile.onCall(0).callsArgWith(2, null, '');
-      var TestBitcoinService = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoinService = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFile: readFile
         }
       });
-      var bitcoind = new TestBitcoinService(baseConfig);
-      bitcoind.spawnStopTime = 1;
-      bitcoind._process = {};
-      bitcoind._process.kill = sinon.stub();
-      bitcoind._stopSpawnedBitcoin(function(err) {
+      var atbcoind = new TestBitcoinService(baseConfig);
+      atbcoind.spawnStopTime = 1;
+      atbcoind._process = {};
+      atbcoind._process.kill = sinon.stub();
+      atbcoind._stopSpawnedBitcoin(function(err) {
         if (err) {
           return done(err);
         }
@@ -1685,20 +1685,20 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('will give error from spawn config', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._loadSpawnConfiguration = sinon.stub();
-      bitcoind._loadSpawnConfiguration = sinon.stub().throws(new Error('test'));
-      bitcoind._spawnChildProcess(function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._loadSpawnConfiguration = sinon.stub();
+      atbcoind._loadSpawnConfiguration = sinon.stub().throws(new Error('test'));
+      atbcoind._spawnChildProcess(function(err) {
         err.should.be.instanceof(Error);
         err.message.should.equal('test');
         done();
       });
     });
     it('will give error from stopSpawnedBitcoin', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._loadSpawnConfiguration = sinon.stub();
-      bitcoind._stopSpawnedBitcoin = sinon.stub().callsArgWith(0, new Error('test'));
-      bitcoind._spawnChildProcess(function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._loadSpawnConfiguration = sinon.stub();
+      atbcoind._stopSpawnedBitcoin = sinon.stub().callsArgWith(0, new Error('test'));
+      atbcoind._spawnChildProcess(function(err) {
         err.should.be.instanceOf(Error);
         err.message.should.equal('test');
       });
@@ -1715,7 +1715,7 @@ describe('Bitcoin Service', function() {
       };
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestBitcoinService = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoinService = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1723,12 +1723,12 @@ describe('Bitcoin Service', function() {
           spawn: spawn
         }
       });
-      var bitcoind = new TestBitcoinService(config);
-      bitcoind.spawn = {};
-      bitcoind._loadSpawnConfiguration = sinon.stub();
-      bitcoind._stopSpawnedBitcoin = sinon.stub().callsArgWith(0, null);
-      bitcoind.node.stopping = true;
-      bitcoind._spawnChildProcess(function(err) {
+      var atbcoind = new TestBitcoinService(config);
+      atbcoind.spawn = {};
+      atbcoind._loadSpawnConfiguration = sinon.stub();
+      atbcoind._stopSpawnedBitcoin = sinon.stub().callsArgWith(0, null);
+      atbcoind.node.stopping = true;
+      atbcoind._spawnChildProcess(function(err) {
         err.should.be.instanceOf(Error);
         err.message.should.match(/Stopping while trying to spawn/);
       });
@@ -1736,7 +1736,7 @@ describe('Bitcoin Service', function() {
     it('will include network with spawn command and init zmq/rpc on node', function(done) {
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestBitcoinService = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoinService = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1744,24 +1744,24 @@ describe('Bitcoin Service', function() {
           spawn: spawn
         }
       });
-      var bitcoind = new TestBitcoinService(baseConfig);
+      var atbcoind = new TestBitcoinService(baseConfig);
 
-      bitcoind._loadSpawnConfiguration = sinon.stub();
-      bitcoind.spawn = {};
-      bitcoind.spawn.exec = 'testexec';
-      bitcoind.spawn.configPath = 'testdir/bitcoin.conf';
-      bitcoind.spawn.datadir = 'testdir';
-      bitcoind.spawn.config = {};
-      bitcoind.spawn.config.rpcport = 20001;
-      bitcoind.spawn.config.rpcuser = 'bitcoin';
-      bitcoind.spawn.config.rpcpassword = 'password';
-      bitcoind.spawn.config.zmqpubrawtx = 'tcp://127.0.0.1:30001';
+      atbcoind._loadSpawnConfiguration = sinon.stub();
+      atbcoind.spawn = {};
+      atbcoind.spawn.exec = 'testexec';
+      atbcoind.spawn.configPath = 'testdir/bitcoin.conf';
+      atbcoind.spawn.datadir = 'testdir';
+      atbcoind.spawn.config = {};
+      atbcoind.spawn.config.rpcport = 20001;
+      atbcoind.spawn.config.rpcuser = 'bitcoin';
+      atbcoind.spawn.config.rpcpassword = 'password';
+      atbcoind.spawn.config.zmqpubrawtx = 'tcp://127.0.0.1:30001';
 
-      bitcoind._loadTipFromNode = sinon.stub().callsArgWith(1, null);
-      bitcoind._initZmqSubSocket = sinon.stub();
-      bitcoind._checkSyncedAndSubscribeZmqEvents = sinon.stub();
-      bitcoind._checkReindex = sinon.stub().callsArgWith(1, null);
-      bitcoind._spawnChildProcess(function(err, node) {
+      atbcoind._loadTipFromNode = sinon.stub().callsArgWith(1, null);
+      atbcoind._initZmqSubSocket = sinon.stub();
+      atbcoind._checkSyncedAndSubscribeZmqEvents = sinon.stub();
+      atbcoind._checkReindex = sinon.stub().callsArgWith(1, null);
+      atbcoind._spawnChildProcess(function(err, node) {
         should.not.exist(err);
         spawn.callCount.should.equal(1);
         spawn.args[0][0].should.equal('testexec');
@@ -1773,21 +1773,21 @@ describe('Bitcoin Service', function() {
         spawn.args[0][2].should.deep.equal({
           stdio: 'inherit'
         });
-        bitcoind._loadTipFromNode.callCount.should.equal(1);
-        bitcoind._initZmqSubSocket.callCount.should.equal(1);
-        should.exist(bitcoind._initZmqSubSocket.args[0][0].client);
-        bitcoind._initZmqSubSocket.args[0][1].should.equal('tcp://127.0.0.1:30001');
-        bitcoind._checkSyncedAndSubscribeZmqEvents.callCount.should.equal(1);
-        should.exist(bitcoind._checkSyncedAndSubscribeZmqEvents.args[0][0].client);
+        atbcoind._loadTipFromNode.callCount.should.equal(1);
+        atbcoind._initZmqSubSocket.callCount.should.equal(1);
+        should.exist(atbcoind._initZmqSubSocket.args[0][0].client);
+        atbcoind._initZmqSubSocket.args[0][1].should.equal('tcp://127.0.0.1:30001');
+        atbcoind._checkSyncedAndSubscribeZmqEvents.callCount.should.equal(1);
+        should.exist(atbcoind._checkSyncedAndSubscribeZmqEvents.args[0][0].client);
         should.exist(node);
         should.exist(node.client);
         done();
       });
     });
-    it('will respawn bitcoind spawned process', function(done) {
+    it('will respawn atbcoind spawned process', function(done) {
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestBitcoinService = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoinService = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1795,27 +1795,27 @@ describe('Bitcoin Service', function() {
           spawn: spawn
         }
       });
-      var bitcoind = new TestBitcoinService(baseConfig);
-      bitcoind._loadSpawnConfiguration = sinon.stub();
-      bitcoind.spawn = {};
-      bitcoind.spawn.exec = 'bitcoind';
-      bitcoind.spawn.datadir = '/tmp/bitcoin';
-      bitcoind.spawn.configPath = '/tmp/bitcoin/bitcoin.conf';
-      bitcoind.spawn.config = {};
-      bitcoind.spawnRestartTime = 1;
-      bitcoind._loadTipFromNode = sinon.stub().callsArg(1);
-      bitcoind._initZmqSubSocket = sinon.stub();
-      bitcoind._checkReindex = sinon.stub().callsArg(1);
-      bitcoind._checkSyncedAndSubscribeZmqEvents = sinon.stub();
-      bitcoind._stopSpawnedBitcoin = sinon.stub().callsArg(0);
-      sinon.spy(bitcoind, '_spawnChildProcess');
-      bitcoind._spawnChildProcess(function(err) {
+      var atbcoind = new TestBitcoinService(baseConfig);
+      atbcoind._loadSpawnConfiguration = sinon.stub();
+      atbcoind.spawn = {};
+      atbcoind.spawn.exec = 'atbcoind';
+      atbcoind.spawn.datadir = '/tmp/atbcoin';
+      atbcoind.spawn.configPath = '/tmp/atbcoin/atbcoin.conf';
+      atbcoind.spawn.config = {};
+      atbcoind.spawnRestartTime = 1;
+      atbcoind._loadTipFromNode = sinon.stub().callsArg(1);
+      atbcoind._initZmqSubSocket = sinon.stub();
+      atbcoind._checkReindex = sinon.stub().callsArg(1);
+      atbcoind._checkSyncedAndSubscribeZmqEvents = sinon.stub();
+      atbcoind._stopSpawnedBitcoin = sinon.stub().callsArg(0);
+      sinon.spy(atbcoind, '_spawnChildProcess');
+      atbcoind._spawnChildProcess(function(err) {
         if (err) {
           return done(err);
         }
         process.once('exit', function() {
           setTimeout(function() {
-            bitcoind._spawnChildProcess.callCount.should.equal(2);
+            atbcoind._spawnChildProcess.callCount.should.equal(2);
             done();
           }, 5);
         });
@@ -1825,7 +1825,7 @@ describe('Bitcoin Service', function() {
     it('will emit error during respawn', function(done) {
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestBitcoinService = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoinService = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1833,26 +1833,26 @@ describe('Bitcoin Service', function() {
           spawn: spawn
         }
       });
-      var bitcoind = new TestBitcoinService(baseConfig);
-      bitcoind._loadSpawnConfiguration = sinon.stub();
-      bitcoind.spawn = {};
-      bitcoind.spawn.exec = 'bitcoind';
-      bitcoind.spawn.datadir = '/tmp/bitcoin';
-      bitcoind.spawn.configPath = '/tmp/bitcoin/bitcoin.conf';
-      bitcoind.spawn.config = {};
-      bitcoind.spawnRestartTime = 1;
-      bitcoind._loadTipFromNode = sinon.stub().callsArg(1);
-      bitcoind._initZmqSubSocket = sinon.stub();
-      bitcoind._checkReindex = sinon.stub().callsArg(1);
-      bitcoind._checkSyncedAndSubscribeZmqEvents = sinon.stub();
-      bitcoind._stopSpawnedBitcoin = sinon.stub().callsArg(0);
-      sinon.spy(bitcoind, '_spawnChildProcess');
-      bitcoind._spawnChildProcess(function(err) {
+      var atbcoind = new TestBitcoinService(baseConfig);
+      atbcoind._loadSpawnConfiguration = sinon.stub();
+      atbcoind.spawn = {};
+      atbcoind.spawn.exec = 'atbcoind';
+      atbcoind.spawn.datadir = '/tmp/atbcoin';
+      atbcoind.spawn.configPath = '/tmp/atbcoin/atbcoin.conf';
+      atbcoind.spawn.config = {};
+      atbcoind.spawnRestartTime = 1;
+      atbcoind._loadTipFromNode = sinon.stub().callsArg(1);
+      atbcoind._initZmqSubSocket = sinon.stub();
+      atbcoind._checkReindex = sinon.stub().callsArg(1);
+      atbcoind._checkSyncedAndSubscribeZmqEvents = sinon.stub();
+      atbcoind._stopSpawnedBitcoin = sinon.stub().callsArg(0);
+      sinon.spy(atbcoind, '_spawnChildProcess');
+      atbcoind._spawnChildProcess(function(err) {
         if (err) {
           return done(err);
         }
-        bitcoind._spawnChildProcess = sinon.stub().callsArgWith(0, new Error('test'));
-        bitcoind.on('error', function(err) {
+        atbcoind._spawnChildProcess = sinon.stub().callsArgWith(0, new Error('test'));
+        atbcoind.on('error', function(err) {
           err.should.be.instanceOf(Error);
           err.message.should.equal('test');
           done();
@@ -1860,10 +1860,10 @@ describe('Bitcoin Service', function() {
         process.emit('exit', 1);
       });
     });
-    it('will NOT respawn bitcoind spawned process if shutting down', function(done) {
+    it('will NOT respawn atbcoind spawned process if shutting down', function(done) {
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestBitcoinService = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoinService = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1880,28 +1880,28 @@ describe('Bitcoin Service', function() {
           exec: 'testpath'
         }
       };
-      var bitcoind = new TestBitcoinService(config);
-      bitcoind._loadSpawnConfiguration = sinon.stub();
-      bitcoind.spawn = {};
-      bitcoind.spawn.exec = 'bitcoind';
-      bitcoind.spawn.datadir = '/tmp/bitcoin';
-      bitcoind.spawn.configPath = '/tmp/bitcoin/bitcoin.conf';
-      bitcoind.spawn.config = {};
-      bitcoind.spawnRestartTime = 1;
-      bitcoind._loadTipFromNode = sinon.stub().callsArg(1);
-      bitcoind._initZmqSubSocket = sinon.stub();
-      bitcoind._checkReindex = sinon.stub().callsArg(1);
-      bitcoind._checkSyncedAndSubscribeZmqEvents = sinon.stub();
-      bitcoind._stopSpawnedBitcoin = sinon.stub().callsArg(0);
-      sinon.spy(bitcoind, '_spawnChildProcess');
-      bitcoind._spawnChildProcess(function(err) {
+      var atbcoind = new TestBitcoinService(config);
+      atbcoind._loadSpawnConfiguration = sinon.stub();
+      atbcoind.spawn = {};
+      atbcoind.spawn.exec = 'atbcoind';
+      atbcoind.spawn.datadir = '/tmp/atbcoin';
+      atbcoind.spawn.configPath = '/tmp/atbcoin/atbcoin.conf';
+      atbcoind.spawn.config = {};
+      atbcoind.spawnRestartTime = 1;
+      atbcoind._loadTipFromNode = sinon.stub().callsArg(1);
+      atbcoind._initZmqSubSocket = sinon.stub();
+      atbcoind._checkReindex = sinon.stub().callsArg(1);
+      atbcoind._checkSyncedAndSubscribeZmqEvents = sinon.stub();
+      atbcoind._stopSpawnedBitcoin = sinon.stub().callsArg(0);
+      sinon.spy(atbcoind, '_spawnChildProcess');
+      atbcoind._spawnChildProcess(function(err) {
         if (err) {
           return done(err);
         }
-        bitcoind.node.stopping = true;
+        atbcoind.node.stopping = true;
         process.once('exit', function() {
           setTimeout(function() {
-            bitcoind._spawnChildProcess.callCount.should.equal(1);
+            atbcoind._spawnChildProcess.callCount.should.equal(1);
             done();
           }, 5);
         });
@@ -1911,7 +1911,7 @@ describe('Bitcoin Service', function() {
     it('will give error after 60 retries', function(done) {
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestBitcoinService = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoinService = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1919,21 +1919,21 @@ describe('Bitcoin Service', function() {
           spawn: spawn
         }
       });
-      var bitcoind = new TestBitcoinService(baseConfig);
-      bitcoind.startRetryInterval = 1;
-      bitcoind._loadSpawnConfiguration = sinon.stub();
-      bitcoind.spawn = {};
-      bitcoind.spawn.exec = 'testexec';
-      bitcoind.spawn.configPath = 'testdir/bitcoin.conf';
-      bitcoind.spawn.datadir = 'testdir';
-      bitcoind.spawn.config = {};
-      bitcoind.spawn.config.rpcport = 20001;
-      bitcoind.spawn.config.rpcuser = 'bitcoin';
-      bitcoind.spawn.config.rpcpassword = 'password';
-      bitcoind.spawn.config.zmqpubrawtx = 'tcp://127.0.0.1:30001';
-      bitcoind._loadTipFromNode = sinon.stub().callsArgWith(1, new Error('test'));
-      bitcoind._spawnChildProcess(function(err) {
-        bitcoind._loadTipFromNode.callCount.should.equal(60);
+      var atbcoind = new TestBitcoinService(baseConfig);
+      atbcoind.startRetryInterval = 1;
+      atbcoind._loadSpawnConfiguration = sinon.stub();
+      atbcoind.spawn = {};
+      atbcoind.spawn.exec = 'testexec';
+      atbcoind.spawn.configPath = 'testdir/atbcoin.conf';
+      atbcoind.spawn.datadir = 'testdir';
+      atbcoind.spawn.config = {};
+      atbcoind.spawn.config.rpcport = 20001;
+      atbcoind.spawn.config.rpcuser = 'bitcoin';
+      atbcoind.spawn.config.rpcpassword = 'password';
+      atbcoind.spawn.config.zmqpubrawtx = 'tcp://127.0.0.1:30001';
+      atbcoind._loadTipFromNode = sinon.stub().callsArgWith(1, new Error('test'));
+      atbcoind._spawnChildProcess(function(err) {
+        atbcoind._loadTipFromNode.callCount.should.equal(60);
         err.should.be.instanceof(Error);
         done();
       });
@@ -1941,7 +1941,7 @@ describe('Bitcoin Service', function() {
     it('will give error from check reindex', function(done) {
       var process = new EventEmitter();
       var spawn = sinon.stub().returns(process);
-      var TestBitcoinService = proxyquire('../../lib/services/bitcoind', {
+      var TestBitcoinService = proxyquire('../../lib/services/atbcoind', {
         fs: {
           readFileSync: readFileSync
         },
@@ -1949,25 +1949,25 @@ describe('Bitcoin Service', function() {
           spawn: spawn
         }
       });
-      var bitcoind = new TestBitcoinService(baseConfig);
+      var atbcoind = new TestBitcoinService(baseConfig);
 
-      bitcoind._loadSpawnConfiguration = sinon.stub();
-      bitcoind.spawn = {};
-      bitcoind.spawn.exec = 'testexec';
-      bitcoind.spawn.configPath = 'testdir/bitcoin.conf';
-      bitcoind.spawn.datadir = 'testdir';
-      bitcoind.spawn.config = {};
-      bitcoind.spawn.config.rpcport = 20001;
-      bitcoind.spawn.config.rpcuser = 'bitcoin';
-      bitcoind.spawn.config.rpcpassword = 'password';
-      bitcoind.spawn.config.zmqpubrawtx = 'tcp://127.0.0.1:30001';
+      atbcoind._loadSpawnConfiguration = sinon.stub();
+      atbcoind.spawn = {};
+      atbcoind.spawn.exec = 'testexec';
+      atbcoind.spawn.configPath = 'testdir/atbcoin.conf';
+      atbcoind.spawn.datadir = 'testdir';
+      atbcoind.spawn.config = {};
+      atbcoind.spawn.config.rpcport = 20001;
+      atbcoind.spawn.config.rpcuser = 'bitcoin';
+      atbcoind.spawn.config.rpcpassword = 'password';
+      atbcoind.spawn.config.zmqpubrawtx = 'tcp://127.0.0.1:30001';
 
-      bitcoind._loadTipFromNode = sinon.stub().callsArgWith(1, null);
-      bitcoind._initZmqSubSocket = sinon.stub();
-      bitcoind._checkSyncedAndSubscribeZmqEvents = sinon.stub();
-      bitcoind._checkReindex = sinon.stub().callsArgWith(1, new Error('test'));
+      atbcoind._loadTipFromNode = sinon.stub().callsArgWith(1, null);
+      atbcoind._initZmqSubSocket = sinon.stub();
+      atbcoind._checkSyncedAndSubscribeZmqEvents = sinon.stub();
+      atbcoind._checkReindex = sinon.stub().callsArgWith(1, new Error('test'));
 
-      bitcoind._spawnChildProcess(function(err) {
+      atbcoind._spawnChildProcess(function(err) {
         err.should.be.instanceof(Error);
         done();
       });
@@ -1985,39 +1985,39 @@ describe('Bitcoin Service', function() {
           exec: 'testpath'
         }
       };
-      var bitcoind = new BitcoinService(config);
-      bitcoind.node.stopping = true;
-      bitcoind.startRetryInterval = 100;
-      bitcoind._loadTipFromNode = sinon.stub();
-      bitcoind._connectProcess({}, function(err) {
+      var atbcoind = new BitcoinService(config);
+      atbcoind.node.stopping = true;
+      atbcoind.startRetryInterval = 100;
+      atbcoind._loadTipFromNode = sinon.stub();
+      atbcoind._connectProcess({}, function(err) {
         err.should.be.instanceof(Error);
         err.message.should.match(/Stopping while trying to connect/);
-        bitcoind._loadTipFromNode.callCount.should.equal(0);
+        atbcoind._loadTipFromNode.callCount.should.equal(0);
         done();
       });
     });
     it('will give error from loadTipFromNode after 60 retries', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._loadTipFromNode = sinon.stub().callsArgWith(1, new Error('test'));
-      bitcoind.startRetryInterval = 1;
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._loadTipFromNode = sinon.stub().callsArgWith(1, new Error('test'));
+      atbcoind.startRetryInterval = 1;
       var config = {};
-      bitcoind._connectProcess(config, function(err) {
+      atbcoind._connectProcess(config, function(err) {
         err.should.be.instanceof(Error);
-        bitcoind._loadTipFromNode.callCount.should.equal(60);
+        atbcoind._loadTipFromNode.callCount.should.equal(60);
         done();
       });
     });
     it('will init zmq/rpc on node', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._initZmqSubSocket = sinon.stub();
-      bitcoind._subscribeZmqEvents = sinon.stub();
-      bitcoind._loadTipFromNode = sinon.stub().callsArgWith(1, null);
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._initZmqSubSocket = sinon.stub();
+      atbcoind._subscribeZmqEvents = sinon.stub();
+      atbcoind._loadTipFromNode = sinon.stub().callsArgWith(1, null);
       var config = {};
-      bitcoind._connectProcess(config, function(err, node) {
+      atbcoind._connectProcess(config, function(err, node) {
         should.not.exist(err);
-        bitcoind._loadTipFromNode.callCount.should.equal(1);
-        bitcoind._initZmqSubSocket.callCount.should.equal(1);
-        bitcoind._loadTipFromNode.callCount.should.equal(1);
+        atbcoind._loadTipFromNode.callCount.should.equal(1);
+        atbcoind._initZmqSubSocket.callCount.should.equal(1);
+        atbcoind._loadTipFromNode.callCount.should.equal(1);
         should.exist(node);
         should.exist(node.client);
         done();
@@ -2034,69 +2034,69 @@ describe('Bitcoin Service', function() {
       sandbox.restore();
     });
     it('will give error if "spawn" and "connect" are both not configured', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.options = {};
-      bitcoind.start(function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.options = {};
+      atbcoind.start(function(err) {
         err.should.be.instanceof(Error);
         err.message.should.match(/Bitcoin configuration options/);
       });
       done();
     });
     it('will give error from spawnChildProcess', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._spawnChildProcess = sinon.stub().callsArgWith(0, new Error('test'));
-      bitcoind.options = {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._spawnChildProcess = sinon.stub().callsArgWith(0, new Error('test'));
+      atbcoind.options = {
         spawn: {}
       };
-      bitcoind.start(function(err) {
+      atbcoind.start(function(err) {
         err.should.be.instanceof(Error);
         err.message.should.equal('test');
         done();
       });
     });
     it('will give error from connectProcess', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._connectProcess = sinon.stub().callsArgWith(1, new Error('test'));
-      bitcoind.options = {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._connectProcess = sinon.stub().callsArgWith(1, new Error('test'));
+      atbcoind.options = {
         connect: [
           {}
         ]
       };
-      bitcoind.start(function(err) {
-        bitcoind._connectProcess.callCount.should.equal(1);
+      atbcoind.start(function(err) {
+        atbcoind._connectProcess.callCount.should.equal(1);
         err.should.be.instanceof(Error);
         err.message.should.equal('test');
         done();
       });
     });
     it('will push node from spawnChildProcess', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var node = {};
-      bitcoind._initChain = sinon.stub().callsArg(0);
-      bitcoind._spawnChildProcess = sinon.stub().callsArgWith(0, null, node);
-      bitcoind.options = {
+      atbcoind._initChain = sinon.stub().callsArg(0);
+      atbcoind._spawnChildProcess = sinon.stub().callsArgWith(0, null, node);
+      atbcoind.options = {
         spawn: {}
       };
-      bitcoind.start(function(err) {
+      atbcoind.start(function(err) {
         should.not.exist(err);
-        bitcoind.nodes.length.should.equal(1);
+        atbcoind.nodes.length.should.equal(1);
         done();
       });
     });
     it('will push node from connectProcess', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._initChain = sinon.stub().callsArg(0);
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._initChain = sinon.stub().callsArg(0);
       var nodes = [{}];
-      bitcoind._connectProcess = sinon.stub().callsArgWith(1, null, nodes);
-      bitcoind.options = {
+      atbcoind._connectProcess = sinon.stub().callsArgWith(1, null, nodes);
+      atbcoind.options = {
         connect: [
           {}
         ]
       };
-      bitcoind.start(function(err) {
+      atbcoind.start(function(err) {
         should.not.exist(err);
-        bitcoind._connectProcess.callCount.should.equal(1);
-        bitcoind.nodes.length.should.equal(1);
+        atbcoind._connectProcess.callCount.should.equal(1);
+        atbcoind.nodes.length.should.equal(1);
         done();
       });
     });
@@ -2104,18 +2104,18 @@ describe('Bitcoin Service', function() {
 
   describe('#isSynced', function() {
     it('will give error from syncPercentage', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.syncPercentage = sinon.stub().callsArgWith(0, new Error('test'));
-      bitcoind.isSynced(function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.syncPercentage = sinon.stub().callsArgWith(0, new Error('test'));
+      atbcoind.isSynced(function(err) {
         should.exist(err);
         err.message.should.equal('test');
         done();
       });
     });
     it('will give "true" if percentage is 100.00', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.syncPercentage = sinon.stub().callsArgWith(0, null, 100.00);
-      bitcoind.isSynced(function(err, synced) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.syncPercentage = sinon.stub().callsArgWith(0, null, 100.00);
+      atbcoind.isSynced(function(err, synced) {
         if (err) {
           return done(err);
         }
@@ -2124,9 +2124,9 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will give "true" if percentage is 99.98', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.syncPercentage = sinon.stub().callsArgWith(0, null, 99.98);
-      bitcoind.isSynced(function(err, synced) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.syncPercentage = sinon.stub().callsArgWith(0, null, 99.98);
+      atbcoind.isSynced(function(err, synced) {
         if (err) {
           return done(err);
         }
@@ -2135,9 +2135,9 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will give "false" if percentage is 99.49', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.syncPercentage = sinon.stub().callsArgWith(0, null, 99.49);
-      bitcoind.isSynced(function(err, synced) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.syncPercentage = sinon.stub().callsArgWith(0, null, 99.49);
+      atbcoind.isSynced(function(err, synced) {
         if (err) {
           return done(err);
         }
@@ -2146,9 +2146,9 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will give "false" if percentage is 1', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.syncPercentage = sinon.stub().callsArgWith(0, null, 1);
-      bitcoind.isSynced(function(err, synced) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.syncPercentage = sinon.stub().callsArgWith(0, null, 1);
+      atbcoind.isSynced(function(err, synced) {
         if (err) {
           return done(err);
         }
@@ -2160,32 +2160,32 @@ describe('Bitcoin Service', function() {
 
   describe('#syncPercentage', function() {
     it('will give rpc error', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockchainInfo = sinon.stub().callsArgWith(0, {message: 'error', code: -1});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockchainInfo: getBlockchainInfo
         }
       });
-      bitcoind.syncPercentage(function(err) {
+      atbcoind.syncPercentage(function(err) {
         should.exist(err);
         err.should.be.an.instanceof(errors.RPCError);
         done();
       });
     });
     it('will call client getInfo and give result', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockchainInfo = sinon.stub().callsArgWith(0, null, {
         result: {
           verificationprogress: '0.983821387'
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockchainInfo: getBlockchainInfo
         }
       });
-      bitcoind.syncPercentage(function(err, percentage) {
+      atbcoind.syncPercentage(function(err, percentage) {
         if (err) {
           return done(err);
         }
@@ -2197,54 +2197,54 @@ describe('Bitcoin Service', function() {
 
   describe('#_normalizeAddressArg', function() {
     it('will turn single address into array', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      var args = bitcoind._normalizeAddressArg('address');
+      var atbcoind = new BitcoinService(baseConfig);
+      var args = atbcoind._normalizeAddressArg('address');
       args.should.deep.equal(['address']);
     });
     it('will keep an array as an array', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      var args = bitcoind._normalizeAddressArg(['address', 'address']);
+      var atbcoind = new BitcoinService(baseConfig);
+      var args = atbcoind._normalizeAddressArg(['address', 'address']);
       args.should.deep.equal(['address', 'address']);
     });
   });
 
   describe('#getAddressBalance', function() {
     it('will give rpc error', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getAddressBalance: sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'})
         }
       });
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
       var options = {};
-      bitcoind.getAddressBalance(address, options, function(err) {
+      atbcoind.getAddressBalance(address, options, function(err) {
         err.should.be.instanceof(Error);
         done();
       });
     });
     it('will give balance', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getAddressBalance = sinon.stub().callsArgWith(1, null, {
         result: {
           received: 100000,
           balance: 10000
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressBalance: getAddressBalance
         }
       });
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
       var options = {};
-      bitcoind.getAddressBalance(address, options, function(err, data) {
+      atbcoind.getAddressBalance(address, options, function(err, data) {
         if (err) {
           return done(err);
         }
         data.balance.should.equal(10000);
         data.received.should.equal(100000);
-        bitcoind.getAddressBalance(address, options, function(err, data2) {
+        atbcoind.getAddressBalance(address, options, function(err, data2) {
           if (err) {
             return done(err);
           }
@@ -2259,8 +2259,8 @@ describe('Bitcoin Service', function() {
 
   describe('#getAddressUnspentOutputs', function() {
     it('will give rpc error', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getAddressUtxos: sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'})
         }
@@ -2269,14 +2269,14 @@ describe('Bitcoin Service', function() {
         queryMempool: false
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressUnspentOutputs(address, options, function(err) {
+      atbcoind.getAddressUnspentOutputs(address, options, function(err) {
         should.exist(err);
         err.should.be.instanceof(errors.RPCError);
         done();
       });
     });
     it('will give results from client getaddressutxos', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var expectedUtxos = [
         {
           address: '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo',
@@ -2287,7 +2287,7 @@ describe('Bitcoin Service', function() {
           height: 207111
         }
       ];
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressUtxos: sinon.stub().callsArgWith(1, null, {
             result: expectedUtxos
@@ -2298,7 +2298,7 @@ describe('Bitcoin Service', function() {
         queryMempool: false
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
+      atbcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
         }
@@ -2308,7 +2308,7 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will use cache', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var expectedUtxos = [
         {
           address: '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo',
@@ -2322,7 +2322,7 @@ describe('Bitcoin Service', function() {
       var getAddressUtxos = sinon.stub().callsArgWith(1, null, {
         result: expectedUtxos
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressUtxos: getAddressUtxos
         }
@@ -2331,14 +2331,14 @@ describe('Bitcoin Service', function() {
         queryMempool: false
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
+      atbcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
         }
         utxos.length.should.equal(1);
         utxos.should.deep.equal(expectedUtxos);
         getAddressUtxos.callCount.should.equal(1);
-        bitcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
+        atbcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
           if (err) {
             return done(err);
           }
@@ -2375,7 +2375,7 @@ describe('Bitcoin Service', function() {
           timestamp: 1461342954813
         }
       ];
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var confirmedUtxos = [
         {
           address: '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo',
@@ -2404,7 +2404,7 @@ describe('Bitcoin Service', function() {
           txid: 'f637384e9f81f18767ea50e00bce58fc9848b6588a1130529eebba22a410155f'
         }
       ];
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressUtxos: sinon.stub().callsArgWith(1, null, {
             result: confirmedUtxos
@@ -2418,7 +2418,7 @@ describe('Bitcoin Service', function() {
         queryMempool: true
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
+      atbcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
         }
@@ -2448,7 +2448,7 @@ describe('Bitcoin Service', function() {
           prevout: 2
         }
       ];
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var confirmedUtxos = [
         {
           address: '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo',
@@ -2467,7 +2467,7 @@ describe('Bitcoin Service', function() {
           height: 207111
         }
       ];
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressUtxos: sinon.stub().callsArgWith(1, null, {
             result: confirmedUtxos
@@ -2481,7 +2481,7 @@ describe('Bitcoin Service', function() {
         queryMempool: true
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
+      atbcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
         }
@@ -2527,7 +2527,7 @@ describe('Bitcoin Service', function() {
           timestamp: 1461342833133
         }
       ];
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var confirmedUtxos = [
         {
           address: '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo',
@@ -2554,7 +2554,7 @@ describe('Bitcoin Service', function() {
           height: 207111
         }
       ];
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressUtxos: sinon.stub().callsArgWith(1, null, {
             result: confirmedUtxos
@@ -2568,7 +2568,7 @@ describe('Bitcoin Service', function() {
         queryMempool: true
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
+      atbcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
         }
@@ -2634,9 +2634,9 @@ describe('Bitcoin Service', function() {
           timestamp: 1461342833133
         }
       ];
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var confirmedUtxos = [];
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressUtxos: sinon.stub().callsArgWith(1, null, {
             result: confirmedUtxos
@@ -2650,7 +2650,7 @@ describe('Bitcoin Service', function() {
         queryMempool: true
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
+      atbcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
         }
@@ -2675,7 +2675,7 @@ describe('Bitcoin Service', function() {
           prevout: 1
         }
       ];
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var confirmedUtxos = [
         {
           address: '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo',
@@ -2686,7 +2686,7 @@ describe('Bitcoin Service', function() {
           height: 207111
         }
       ];
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressUtxos: sinon.stub().callsArgWith(1, null, {
             result: confirmedUtxos
@@ -2700,7 +2700,7 @@ describe('Bitcoin Service', function() {
         queryMempool: true
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
+      atbcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
         }
@@ -2718,7 +2718,7 @@ describe('Bitcoin Service', function() {
           timestamp: 1461342707725
         }
       ];
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var confirmedUtxos = [
         {
           address: '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo',
@@ -2729,7 +2729,7 @@ describe('Bitcoin Service', function() {
           height: 207111
         }
       ];
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressUtxos: sinon.stub().callsArgWith(1, null, {
             result: confirmedUtxos
@@ -2743,7 +2743,7 @@ describe('Bitcoin Service', function() {
         queryMempool: true
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
+      atbcoind.getAddressUnspentOutputs(address, options, function(err, utxos) {
         if (err) {
           return done(err);
         }
@@ -2752,8 +2752,8 @@ describe('Bitcoin Service', function() {
       });
     });
     it('it will handle error from getAddressMempool', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, {code: -1, message: 'test'})
         }
@@ -2762,22 +2762,22 @@ describe('Bitcoin Service', function() {
         queryMempool: true
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressUnspentOutputs(address, options, function(err) {
+      atbcoind.getAddressUnspentOutputs(address, options, function(err) {
         err.should.be.instanceOf(Error);
         done();
       });
     });
     it('should set query mempool if undefined', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getAddressMempool = sinon.stub().callsArgWith(1, {code: -1, message: 'test'});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressMempool: getAddressMempool
         }
       });
       var options = {};
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressUnspentOutputs(address, options, function(err) {
+      atbcoind.getAddressUnspentOutputs(address, options, function(err) {
         getAddressMempool.callCount.should.equal(1);
         done();
       });
@@ -2786,7 +2786,7 @@ describe('Bitcoin Service', function() {
 
   describe('#_getBalanceFromMempool', function() {
     it('will sum satoshis', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var deltas = [
         {
           satoshis: -1000,
@@ -2798,14 +2798,14 @@ describe('Bitcoin Service', function() {
           satoshis: -10,
         }
       ];
-      var sum = bitcoind._getBalanceFromMempool(deltas);
+      var sum = atbcoind._getBalanceFromMempool(deltas);
       sum.should.equal(990);
     });
   });
 
   describe('#_getTxidsFromMempool', function() {
     it('will filter to txids', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var deltas = [
         {
           txid: 'txid0',
@@ -2817,14 +2817,14 @@ describe('Bitcoin Service', function() {
           txid: 'txid2',
         }
       ];
-      var txids = bitcoind._getTxidsFromMempool(deltas);
+      var txids = atbcoind._getTxidsFromMempool(deltas);
       txids.length.should.equal(3);
       txids[0].should.equal('txid0');
       txids[1].should.equal('txid1');
       txids[2].should.equal('txid2');
     });
     it('will not include duplicates', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var deltas = [
         {
           txid: 'txid0',
@@ -2836,7 +2836,7 @@ describe('Bitcoin Service', function() {
           txid: 'txid1',
         }
       ];
-      var txids = bitcoind._getTxidsFromMempool(deltas);
+      var txids = atbcoind._getTxidsFromMempool(deltas);
       txids.length.should.equal(2);
       txids[0].should.equal('txid0');
       txids[1].should.equal('txid1');
@@ -2845,64 +2845,64 @@ describe('Bitcoin Service', function() {
 
   describe('#_getHeightRangeQuery', function() {
     it('will detect range query', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var options = {
         start: 20,
         end: 0
       };
-      var rangeQuery = bitcoind._getHeightRangeQuery(options);
+      var rangeQuery = atbcoind._getHeightRangeQuery(options);
       rangeQuery.should.equal(true);
     });
     it('will get range properties', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var options = {
         start: 20,
         end: 0
       };
       var clone = {};
-      bitcoind._getHeightRangeQuery(options, clone);
+      atbcoind._getHeightRangeQuery(options, clone);
       clone.end.should.equal(20);
       clone.start.should.equal(0);
     });
     it('will throw error with invalid range', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var options = {
         start: 0,
         end: 20
       };
       (function() {
-        bitcoind._getHeightRangeQuery(options);
+        atbcoind._getHeightRangeQuery(options);
       }).should.throw('"end" is expected');
     });
   });
 
   describe('#getAddressTxids', function() {
     it('will give error from _getHeightRangeQuery', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._getHeightRangeQuery = sinon.stub().throws(new Error('test'));
-      bitcoind.getAddressTxids('address', {}, function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._getHeightRangeQuery = sinon.stub().throws(new Error('test'));
+      atbcoind.getAddressTxids('address', {}, function(err) {
         err.should.be.instanceOf(Error);
         err.message.should.equal('test');
         done();
       });
     });
     it('will give rpc error from mempool query', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'})
         }
       });
       var options = {};
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressTxids(address, options, function(err) {
+      atbcoind.getAddressTxids(address, options, function(err) {
         should.exist(err);
         err.should.be.instanceof(errors.RPCError);
       });
     });
     it('will give rpc error from txids query', function() {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getAddressTxids: sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'})
         }
@@ -2911,7 +2911,7 @@ describe('Bitcoin Service', function() {
         queryMempool: false
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressTxids(address, options, function(err) {
+      atbcoind.getAddressTxids(address, options, function(err) {
         should.exist(err);
         err.should.be.instanceof(errors.RPCError);
       });
@@ -2929,8 +2929,8 @@ describe('Bitcoin Service', function() {
         'ed11a08e3102f9610bda44c80c46781d97936a4290691d87244b1b345b39a693',
         'ec94d845c603f292a93b7c829811ac624b76e52b351617ca5a758e9d61a11681'
       ];
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getAddressTxids: sinon.stub().callsArgWith(1, null, {
             result: expectedTxids.reverse()
@@ -2941,7 +2941,7 @@ describe('Bitcoin Service', function() {
         queryMempool: false
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressTxids(address, options, function(err, txids) {
+      atbcoind.getAddressTxids(address, options, function(err, txids) {
         if (err) {
           return done(err);
         }
@@ -2954,11 +2954,11 @@ describe('Bitcoin Service', function() {
       var expectedTxids = [
         'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce'
       ];
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getAddressTxids = sinon.stub().callsArgWith(1, null, {
         result: expectedTxids.reverse()
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressTxids: getAddressTxids
         }
@@ -2967,14 +2967,14 @@ describe('Bitcoin Service', function() {
         queryMempool: false
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressTxids(address, options, function(err, txids) {
+      atbcoind.getAddressTxids(address, options, function(err, txids) {
         if (err) {
           return done(err);
         }
         getAddressTxids.callCount.should.equal(1);
         txids.should.deep.equal(expectedTxids);
 
-        bitcoind.getAddressTxids(address, options, function(err, txids) {
+        atbcoind.getAddressTxids(address, options, function(err, txids) {
           if (err) {
             return done(err);
           }
@@ -2988,12 +2988,12 @@ describe('Bitcoin Service', function() {
       var expectedTxids = [
         'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce'
       ];
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getAddressMempool = sinon.stub();
       var getAddressTxids = sinon.stub().callsArgWith(1, null, {
         result: expectedTxids.reverse()
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressTxids: getAddressTxids,
           getAddressMempool: getAddressMempool
@@ -3005,7 +3005,7 @@ describe('Bitcoin Service', function() {
         end: 2
       };
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressTxids(address, options, function(err, txids) {
+      atbcoind.getAddressTxids(address, options, function(err, txids) {
         if (err) {
           return done(err);
         }
@@ -3013,7 +3013,7 @@ describe('Bitcoin Service', function() {
         getAddressMempool.callCount.should.equal(0);
         txids.should.deep.equal(expectedTxids);
 
-        bitcoind.getAddressTxids(address, options, function(err, txids) {
+        atbcoind.getAddressTxids(address, options, function(err, txids) {
           if (err) {
             return done(err);
           }
@@ -3028,7 +3028,7 @@ describe('Bitcoin Service', function() {
       var expectedTxids = [
         'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce'
       ];
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getAddressTxids = sinon.stub().callsArgWith(1, null, {
         result: expectedTxids.reverse()
       });
@@ -3045,21 +3045,21 @@ describe('Bitcoin Service', function() {
           }
         ]
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressTxids: getAddressTxids,
           getAddressMempool: getAddressMempool
         }
       });
       var address = '1Cj4UZWnGWAJH1CweTMgPLQMn26WRMfXmo';
-      bitcoind.getAddressTxids(address, {queryMempool: false}, function(err, txids) {
+      atbcoind.getAddressTxids(address, {queryMempool: false}, function(err, txids) {
         if (err) {
           return done(err);
         }
         getAddressTxids.callCount.should.equal(1);
         txids.should.deep.equal(expectedTxids);
 
-        bitcoind.getAddressTxids(address, {queryMempool: true}, function(err, txids) {
+        atbcoind.getAddressTxids(address, {queryMempool: true}, function(err, txids) {
           if (err) {
             return done(err);
           }
@@ -3071,7 +3071,7 @@ describe('Bitcoin Service', function() {
             'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce' // confirmed
           ]);
 
-          bitcoind.getAddressTxids(address, {queryMempoolOnly: true}, function(err, txids) {
+          atbcoind.getAddressTxids(address, {queryMempoolOnly: true}, function(err, txids) {
             if (err) {
               return done(err);
             }
@@ -3099,69 +3099,69 @@ describe('Bitcoin Service', function() {
     it('should get 0 confirmation', function() {
       var tx = new Transaction(txhex);
       tx.height = -1;
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.height = 10;
-      var confirmations = bitcoind._getConfirmationsDetail(tx);
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.height = 10;
+      var confirmations = atbcoind._getConfirmationsDetail(tx);
       confirmations.should.equal(0);
     });
     it('should get 1 confirmation', function() {
       var tx = new Transaction(txhex);
       tx.height = 10;
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.height = 10;
-      var confirmations = bitcoind._getConfirmationsDetail(tx);
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.height = 10;
+      var confirmations = atbcoind._getConfirmationsDetail(tx);
       confirmations.should.equal(1);
     });
     it('should get 2 confirmation', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var tx = new Transaction(txhex);
-      bitcoind.height = 11;
+      atbcoind.height = 11;
       tx.height = 10;
-      var confirmations = bitcoind._getConfirmationsDetail(tx);
+      var confirmations = atbcoind._getConfirmationsDetail(tx);
       confirmations.should.equal(2);
     });
     it('should get 0 confirmation with overflow', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var tx = new Transaction(txhex);
-      bitcoind.height = 3;
+      atbcoind.height = 3;
       tx.height = 10;
-      var confirmations = bitcoind._getConfirmationsDetail(tx);
+      var confirmations = atbcoind._getConfirmationsDetail(tx);
       log.warn.callCount.should.equal(1);
       confirmations.should.equal(0);
     });
     it('should get 1000 confirmation', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var tx = new Transaction(txhex);
-      bitcoind.height = 1000;
+      atbcoind.height = 1000;
       tx.height = 1;
-      var confirmations = bitcoind._getConfirmationsDetail(tx);
+      var confirmations = atbcoind._getConfirmationsDetail(tx);
       confirmations.should.equal(1000);
     });
   });
 
   describe('#_getAddressDetailsForInput', function() {
     it('will return if missing an address', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var result = {};
-      bitcoind._getAddressDetailsForInput({}, 0, result, []);
+      atbcoind._getAddressDetailsForInput({}, 0, result, []);
       should.not.exist(result.addresses);
       should.not.exist(result.satoshis);
     });
     it('will only add address if it matches', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var result = {};
-      bitcoind._getAddressDetailsForInput({
+      atbcoind._getAddressDetailsForInput({
         address: 'address1'
       }, 0, result, ['address2']);
       should.not.exist(result.addresses);
       should.not.exist(result.satoshis);
     });
     it('will instantiate if outputIndexes not defined', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var result = {
         addresses: {}
       };
-      bitcoind._getAddressDetailsForInput({
+      atbcoind._getAddressDetailsForInput({
         address: 'address1'
       }, 0, result, ['address1']);
       should.exist(result.addresses);
@@ -3169,7 +3169,7 @@ describe('Bitcoin Service', function() {
       result.addresses['address1'].outputIndexes.should.deep.equal([]);
     });
     it('will push to inputIndexes', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var result = {
         addresses: {
           'address1': {
@@ -3177,7 +3177,7 @@ describe('Bitcoin Service', function() {
           }
         }
       };
-      bitcoind._getAddressDetailsForInput({
+      atbcoind._getAddressDetailsForInput({
         address: 'address1'
       }, 2, result, ['address1']);
       should.exist(result.addresses);
@@ -3187,27 +3187,27 @@ describe('Bitcoin Service', function() {
 
   describe('#_getAddressDetailsForOutput', function() {
     it('will return if missing an address', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var result = {};
-      bitcoind._getAddressDetailsForOutput({}, 0, result, []);
+      atbcoind._getAddressDetailsForOutput({}, 0, result, []);
       should.not.exist(result.addresses);
       should.not.exist(result.satoshis);
     });
     it('will only add address if it matches', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var result = {};
-      bitcoind._getAddressDetailsForOutput({
+      atbcoind._getAddressDetailsForOutput({
         address: 'address1'
       }, 0, result, ['address2']);
       should.not.exist(result.addresses);
       should.not.exist(result.satoshis);
     });
     it('will instantiate if outputIndexes not defined', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var result = {
         addresses: {}
       };
-      bitcoind._getAddressDetailsForOutput({
+      atbcoind._getAddressDetailsForOutput({
         address: 'address1'
       }, 0, result, ['address1']);
       should.exist(result.addresses);
@@ -3215,7 +3215,7 @@ describe('Bitcoin Service', function() {
       result.addresses['address1'].outputIndexes.should.deep.equal([0]);
     });
     it('will push if outputIndexes defined', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var result = {
         addresses: {
           'address1': {
@@ -3223,7 +3223,7 @@ describe('Bitcoin Service', function() {
           }
         }
       };
-      bitcoind._getAddressDetailsForOutput({
+      atbcoind._getAddressDetailsForOutput({
         address: 'address1'
       }, 1, result, ['address1']);
       should.exist(result.addresses);
@@ -3265,9 +3265,9 @@ describe('Bitcoin Service', function() {
         ],
         locktime: 0
       };
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var addresses = ['mgY65WSfEmsyYaYPQaXhmXMeBhwp4EcsQW'];
-      var details = bitcoind._getAddressDetailsForTransaction(tx, addresses);
+      var details = atbcoind._getAddressDetailsForTransaction(tx, addresses);
       should.exist(details.addresses['mgY65WSfEmsyYaYPQaXhmXMeBhwp4EcsQW']);
       details.addresses['mgY65WSfEmsyYaYPQaXhmXMeBhwp4EcsQW'].inputIndexes.should.deep.equal([0]);
       details.addresses['mgY65WSfEmsyYaYPQaXhmXMeBhwp4EcsQW'].outputIndexes.should.deep.equal([
@@ -3284,15 +3284,15 @@ describe('Bitcoin Service', function() {
       var tx = {
         height: 20,
       };
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.getDetailedTransaction = sinon.stub().callsArgWith(1, null, tx);
-      bitcoind.height = 300;
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.getDetailedTransaction = sinon.stub().callsArgWith(1, null, tx);
+      atbcoind.height = 300;
       var addresses = {};
-      bitcoind._getAddressDetailsForTransaction = sinon.stub().returns({
+      atbcoind._getAddressDetailsForTransaction = sinon.stub().returns({
         addresses: addresses,
         satoshis: 1000,
       });
-      bitcoind._getAddressDetailedTransaction(txid, {}, function(err, details) {
+      atbcoind._getAddressDetailedTransaction(txid, {}, function(err, details) {
         if (err) {
           return done(err);
         }
@@ -3305,9 +3305,9 @@ describe('Bitcoin Service', function() {
     });
     it('give error from getDetailedTransaction', function(done) {
       var txid = '46f24e0c274fc07708b781963576c4c5d5625d926dbb0a17fa865dcd9fe58ea0';
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.getDetailedTransaction = sinon.stub().callsArgWith(1, new Error('test'));
-      bitcoind._getAddressDetailedTransaction(txid, {}, function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.getDetailedTransaction = sinon.stub().callsArgWith(1, new Error('test'));
+      atbcoind._getAddressDetailedTransaction(txid, {}, function(err) {
         err.should.be.instanceof(Error);
         done();
       });
@@ -3320,8 +3320,8 @@ describe('Bitcoin Service', function() {
         bitcore.Address('1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i'),
         bitcore.Address('3CMNFxN1oHBc4R1EpboAL5yzHGgE611Xou'),
       ];
-      var bitcoind = new BitcoinService(baseConfig);
-      var strings = bitcoind._getAddressStrings(addresses);
+      var atbcoind = new BitcoinService(baseConfig);
+      var strings = atbcoind._getAddressStrings(addresses);
       strings[0].should.equal('1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i');
       strings[1].should.equal('3CMNFxN1oHBc4R1EpboAL5yzHGgE611Xou');
     });
@@ -3330,8 +3330,8 @@ describe('Bitcoin Service', function() {
         '1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i',
         '3CMNFxN1oHBc4R1EpboAL5yzHGgE611Xou',
       ];
-      var bitcoind = new BitcoinService(baseConfig);
-      var strings = bitcoind._getAddressStrings(addresses);
+      var atbcoind = new BitcoinService(baseConfig);
+      var strings = atbcoind._getAddressStrings(addresses);
       strings[0].should.equal('1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i');
       strings[1].should.equal('3CMNFxN1oHBc4R1EpboAL5yzHGgE611Xou');
     });
@@ -3340,8 +3340,8 @@ describe('Bitcoin Service', function() {
         bitcore.Address('1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i'),
         '3CMNFxN1oHBc4R1EpboAL5yzHGgE611Xou',
       ];
-      var bitcoind = new BitcoinService(baseConfig);
-      var strings = bitcoind._getAddressStrings(addresses);
+      var atbcoind = new BitcoinService(baseConfig);
+      var strings = atbcoind._getAddressStrings(addresses);
       strings[0].should.equal('1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i');
       strings[1].should.equal('3CMNFxN1oHBc4R1EpboAL5yzHGgE611Xou');
     });
@@ -3350,43 +3350,43 @@ describe('Bitcoin Service', function() {
         bitcore.Address('1AGNa15ZQXAZUgFiqJ2i7Z2DPU2J6hW62i'),
         0,
       ];
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       (function() {
-        bitcoind._getAddressStrings(addresses);
+        atbcoind._getAddressStrings(addresses);
       }).should.throw(TypeError);
     });
   });
 
   describe('#_paginateTxids', function() {
     it('slice txids based on "from" and "to" (3 to 13)', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var txids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      var paginated = bitcoind._paginateTxids(txids, 3, 13);
+      var paginated = atbcoind._paginateTxids(txids, 3, 13);
       paginated.should.deep.equal([3, 4, 5, 6, 7, 8, 9, 10]);
     });
     it('slice txids based on "from" and "to" (0 to 3)', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var txids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      var paginated = bitcoind._paginateTxids(txids, 0, 3);
+      var paginated = atbcoind._paginateTxids(txids, 0, 3);
       paginated.should.deep.equal([0, 1, 2]);
     });
     it('slice txids based on "from" and "to" (0 to 1)', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var txids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      var paginated = bitcoind._paginateTxids(txids, 0, 1);
+      var paginated = atbcoind._paginateTxids(txids, 0, 1);
       paginated.should.deep.equal([0]);
     });
     it('will throw error if "from" is greater than "to"', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var txids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
       (function() {
-        bitcoind._paginateTxids(txids, 1, 0);
+        atbcoind._paginateTxids(txids, 1, 0);
       }).should.throw('"from" (1) is expected to be less than "to"');
     });
     it('will handle string numbers', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var txids = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-      var paginated = bitcoind._paginateTxids(txids, '1', '3');
+      var paginated = atbcoind._paginateTxids(txids, '1', '3');
       paginated.should.deep.equal([1, 2]);
     });
   });
@@ -3394,27 +3394,27 @@ describe('Bitcoin Service', function() {
   describe('#getAddressHistory', function() {
     var address = '12c6DSiU4Rq3P4ZxziKxzrL5LmMBrzjrJX';
     it('will give error with "from" and "to" range that exceeds max size', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.getAddressHistory(address, {from: 0, to: 51}, function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.getAddressHistory(address, {from: 0, to: 51}, function(err) {
         should.exist(err);
         err.message.match(/^\"from/);
         done();
       });
     });
     it('will give error with "from" and "to" order is reversed', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, []);
-      bitcoind.getAddressHistory(address, {from: 51, to: 0}, function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, []);
+      atbcoind.getAddressHistory(address, {from: 51, to: 0}, function(err) {
         should.exist(err);
         err.message.match(/^\"from/);
         done();
       });
     });
     it('will give error from _getAddressDetailedTransaction', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, ['txid']);
-      bitcoind._getAddressDetailedTransaction = sinon.stub().callsArgWith(2, new Error('test'));
-      bitcoind.getAddressHistory(address, {}, function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, ['txid']);
+      atbcoind._getAddressDetailedTransaction = sinon.stub().callsArgWith(2, new Error('test'));
+      atbcoind.getAddressHistory(address, {}, function(err) {
         should.exist(err);
         err.message.should.equal('test');
         done();
@@ -3425,18 +3425,18 @@ describe('Bitcoin Service', function() {
       for (var i = 0; i < 101; i++) {
         addresses.push(address);
       }
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.maxAddressesQuery = 100;
-      bitcoind.getAddressHistory(addresses, {}, function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.maxAddressesQuery = 100;
+      atbcoind.getAddressHistory(addresses, {}, function(err) {
         should.exist(err);
         err.message.match(/Maximum/);
         done();
       });
     });
     it('give error from getAddressTxids', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.getAddressTxids = sinon.stub().callsArgWith(2, new Error('test'));
-      bitcoind.getAddressHistory('address', {}, function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.getAddressTxids = sinon.stub().callsArgWith(2, new Error('test'));
+      atbcoind.getAddressHistory('address', {}, function(err) {
         should.exist(err);
         err.should.be.instanceof(Error);
         err.message.should.equal('test');
@@ -3444,13 +3444,13 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will paginate', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._getAddressDetailedTransaction = function(txid, options, callback) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._getAddressDetailedTransaction = function(txid, options, callback) {
         callback(null, txid);
       };
       var txids = ['one', 'two', 'three', 'four'];
-      bitcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, txids);
-      bitcoind.getAddressHistory('address', {from: 1, to: 3}, function(err, data) {
+      atbcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, txids);
+      atbcoind.getAddressHistory('address', {from: 1, to: 3}, function(err, data) {
         if (err) {
           return done(err);
         }
@@ -3468,8 +3468,8 @@ describe('Bitcoin Service', function() {
     var memtxid1 = 'b1bfa8dbbde790cb46b9763ef3407c1a21c8264b67bfe224f462ec0e1f569e92';
     var memtxid2 = 'e9dcf22807db77ac0276b03cc2d3a8b03c4837db8ac6650501ef45af1c807cce';
     it('will handle error from getAddressTxids', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, null, {
             result: [
@@ -3480,11 +3480,11 @@ describe('Bitcoin Service', function() {
           })
         }
       });
-      bitcoind.getAddressTxids = sinon.stub().callsArgWith(2, new Error('test'));
-      bitcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {});
+      atbcoind.getAddressTxids = sinon.stub().callsArgWith(2, new Error('test'));
+      atbcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {});
       var address = '';
       var options = {};
-      bitcoind.getAddressSummary(address, options, function(err) {
+      atbcoind.getAddressSummary(address, options, function(err) {
         should.exist(err);
         err.should.be.instanceof(Error);
         err.message.should.equal('test');
@@ -3492,8 +3492,8 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will handle error from getAddressBalance', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, null, {
             result: [
@@ -3504,11 +3504,11 @@ describe('Bitcoin Service', function() {
           })
         }
       });
-      bitcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, {});
-      bitcoind.getAddressBalance = sinon.stub().callsArgWith(2, new Error('test'), {});
+      atbcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, {});
+      atbcoind.getAddressBalance = sinon.stub().callsArgWith(2, new Error('test'), {});
       var address = '';
       var options = {};
-      bitcoind.getAddressSummary(address, options, function(err) {
+      atbcoind.getAddressSummary(address, options, function(err) {
         should.exist(err);
         err.should.be.instanceof(Error);
         err.message.should.equal('test');
@@ -3516,17 +3516,17 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will handle error from client getAddressMempool', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'})
         }
       });
-      bitcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, {});
-      bitcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {});
+      atbcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, {});
+      atbcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {});
       var address = '';
       var options = {};
-      bitcoind.getAddressSummary(address, options, function(err) {
+      atbcoind.getAddressSummary(address, options, function(err) {
         should.exist(err);
         err.should.be.instanceof(Error);
         err.message.should.equal('Test error');
@@ -3534,8 +3534,8 @@ describe('Bitcoin Service', function() {
       });
     });
     it('should set all properties', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, null, {
             result: [
@@ -3551,18 +3551,18 @@ describe('Bitcoin Service', function() {
           })
         }
       });
-      sinon.spy(bitcoind, '_paginateTxids');
-      bitcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, [txid1, txid2, txid3]);
-      bitcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {
+      sinon.spy(atbcoind, '_paginateTxids');
+      atbcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, [txid1, txid2, txid3]);
+      atbcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {
         received: 30 * 1e8,
         balance: 20 * 1e8
       });
       var address = '3NbU8XzUgKyuCgYgZEKsBtUvkTm2r7Xgwj';
       var options = {};
-      bitcoind.getAddressSummary(address, options, function(err, summary) {
-        bitcoind._paginateTxids.callCount.should.equal(1);
-        bitcoind._paginateTxids.args[0][1].should.equal(0);
-        bitcoind._paginateTxids.args[0][2].should.equal(1000);
+      atbcoind.getAddressSummary(address, options, function(err, summary) {
+        atbcoind._paginateTxids.callCount.should.equal(1);
+        atbcoind._paginateTxids.args[0][1].should.equal(0);
+        atbcoind._paginateTxids.args[0][2].should.equal(1000);
         summary.appearances.should.equal(3);
         summary.totalReceived.should.equal(3000000000);
         summary.totalSpent.should.equal(1000000000);
@@ -3580,8 +3580,8 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will give error with "from" and "to" range that exceeds max size', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, null, {
             result: [
@@ -3597,8 +3597,8 @@ describe('Bitcoin Service', function() {
           })
         }
       });
-      bitcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, [txid1, txid2, txid3]);
-      bitcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {
+      atbcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, [txid1, txid2, txid3]);
+      atbcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {
         received: 30 * 1e8,
         balance: 20 * 1e8
       });
@@ -3607,15 +3607,15 @@ describe('Bitcoin Service', function() {
         from: 0,
         to: 1001
       };
-      bitcoind.getAddressSummary(address, options, function(err) {
+      atbcoind.getAddressSummary(address, options, function(err) {
         should.exist(err);
         err.message.match(/^\"from/);
         done();
       });
     });
     it('will get from cache with noTxList', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getAddressMempool: sinon.stub().callsArgWith(1, null, {
             result: [
@@ -3631,8 +3631,8 @@ describe('Bitcoin Service', function() {
           })
         }
       });
-      bitcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, [txid1, txid2, txid3]);
-      bitcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {
+      atbcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, [txid1, txid2, txid3]);
+      atbcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {
         received: 30 * 1e8,
         balance: 20 * 1e8
       });
@@ -3649,29 +3649,29 @@ describe('Bitcoin Service', function() {
         summary.unconfirmedBalance.should.equal(-900001);
         should.not.exist(summary.txids);
       }
-      bitcoind.getAddressSummary(address, options, function(err, summary) {
+      atbcoind.getAddressSummary(address, options, function(err, summary) {
         checkSummary(summary);
-        bitcoind.getAddressTxids.callCount.should.equal(1);
-        bitcoind.getAddressBalance.callCount.should.equal(1);
-        bitcoind.getAddressSummary(address, options, function(err, summary) {
+        atbcoind.getAddressTxids.callCount.should.equal(1);
+        atbcoind.getAddressBalance.callCount.should.equal(1);
+        atbcoind.getAddressSummary(address, options, function(err, summary) {
           checkSummary(summary);
-          bitcoind.getAddressTxids.callCount.should.equal(1);
-          bitcoind.getAddressBalance.callCount.should.equal(1);
+          atbcoind.getAddressTxids.callCount.should.equal(1);
+          atbcoind.getAddressBalance.callCount.should.equal(1);
           done();
         });
       });
     });
     it('will skip querying the mempool with queryMempool set to false', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getAddressMempool = sinon.stub();
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressMempool: getAddressMempool
         }
       });
-      sinon.spy(bitcoind, '_paginateTxids');
-      bitcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, [txid1, txid2, txid3]);
-      bitcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {
+      sinon.spy(atbcoind, '_paginateTxids');
+      atbcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, [txid1, txid2, txid3]);
+      atbcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {
         received: 30 * 1e8,
         balance: 20 * 1e8
       });
@@ -3679,31 +3679,31 @@ describe('Bitcoin Service', function() {
       var options = {
         queryMempool: false
       };
-      bitcoind.getAddressSummary(address, options, function() {
+      atbcoind.getAddressSummary(address, options, function() {
         getAddressMempool.callCount.should.equal(0);
         done();
       });
     });
     it('will give error from _paginateTxids', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getAddressMempool = sinon.stub();
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getAddressMempool: getAddressMempool
         }
       });
-      sinon.spy(bitcoind, '_paginateTxids');
-      bitcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, [txid1, txid2, txid3]);
-      bitcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {
+      sinon.spy(atbcoind, '_paginateTxids');
+      atbcoind.getAddressTxids = sinon.stub().callsArgWith(2, null, [txid1, txid2, txid3]);
+      atbcoind.getAddressBalance = sinon.stub().callsArgWith(2, null, {
         received: 30 * 1e8,
         balance: 20 * 1e8
       });
-      bitcoind._paginateTxids = sinon.stub().throws(new Error('test'));
+      atbcoind._paginateTxids = sinon.stub().throws(new Error('test'));
       var address = '3NbU8XzUgKyuCgYgZEKsBtUvkTm2r7Xgwj';
       var options = {
         queryMempool: false
       };
-      bitcoind.getAddressSummary(address, options, function(err) {
+      atbcoind.getAddressSummary(address, options, function(err) {
         err.should.be.instanceOf(Error);
         err.message.should.equal('test');
         done();
@@ -3715,53 +3715,53 @@ describe('Bitcoin Service', function() {
     var blockhash = '00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b';
     var blockhex = '0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c0101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000';
     it('will give rcp error from client getblockhash', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getBlockHash: sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'})
         }
       });
-      bitcoind.getRawBlock(10, function(err) {
+      atbcoind.getRawBlock(10, function(err) {
         should.exist(err);
         err.should.be.instanceof(errors.RPCError);
         done();
       });
     });
     it('will give rcp error from client getblock', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getBlock: sinon.stub().callsArgWith(2, {code: -1, message: 'Test error'})
         }
       });
-      bitcoind.getRawBlock(blockhash, function(err) {
+      atbcoind.getRawBlock(blockhash, function(err) {
         should.exist(err);
         err.should.be.instanceof(errors.RPCError);
         done();
       });
     });
     it('will try all nodes for getblock', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockWithError = sinon.stub().callsArgWith(2, {code: -1, message: 'Test error'});
-      bitcoind.tryAllInterval = 1;
-      bitcoind.nodes.push({
+      atbcoind.tryAllInterval = 1;
+      atbcoind.nodes.push({
         client: {
           getBlock: getBlockWithError
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlock: getBlockWithError
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlock: sinon.stub().callsArgWith(2, null, {
             result: blockhex
           })
         }
       });
-      bitcoind.getRawBlock(blockhash, function(err, buffer) {
+      atbcoind.getRawBlock(blockhash, function(err, buffer) {
         if (err) {
           return done(err);
         }
@@ -3771,22 +3771,22 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will get block from cache', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockhex
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlock: getBlock
         }
       });
-      bitcoind.getRawBlock(blockhash, function(err, buffer) {
+      atbcoind.getRawBlock(blockhash, function(err, buffer) {
         if (err) {
           return done(err);
         }
         buffer.should.be.instanceof(Buffer);
         getBlock.callCount.should.equal(1);
-        bitcoind.getRawBlock(blockhash, function(err, buffer) {
+        atbcoind.getRawBlock(blockhash, function(err, buffer) {
           if (err) {
             return done(err);
           }
@@ -3797,20 +3797,20 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will get block by height', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockhex
       });
       var getBlockHash = sinon.stub().callsArgWith(1, null, {
         result: '000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f'
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlock: getBlock,
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.getRawBlock(0, function(err, buffer) {
+      atbcoind.getRawBlock(0, function(err, buffer) {
         if (err) {
           return done(err);
         }
@@ -3825,48 +3825,48 @@ describe('Bitcoin Service', function() {
   describe('#getBlock', function() {
     var blockhex = '0100000000000000000000000000000000000000000000000000000000000000000000003ba3edfd7a7b12b27ac72c3e67768f617fc81bc3888a51323a9fb8aa4b1e5e4a29ab5f49ffff001d1dac2b7c0101000000010000000000000000000000000000000000000000000000000000000000000000ffffffff4d04ffff001d0104455468652054696d65732030332f4a616e2f32303039204368616e63656c6c6f72206f6e206272696e6b206f66207365636f6e64206261696c6f757420666f722062616e6b73ffffffff0100f2052a01000000434104678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5fac00000000';
     it('will give an rpc error from client getblock', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, {code: -1, message: 'Test error'});
       var getBlockHash = sinon.stub().callsArgWith(1, null, {});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlock: getBlock,
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.getBlock(0, function(err) {
+      atbcoind.getBlock(0, function(err) {
         err.should.be.instanceof(Error);
         done();
       });
     });
     it('will give an rpc error from client getblockhash', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockHash = sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.getBlock(0, function(err) {
+      atbcoind.getBlock(0, function(err) {
         err.should.be.instanceof(Error);
         done();
       });
     });
     it('will getblock as bitcore object from height', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockhex
       });
       var getBlockHash = sinon.stub().callsArgWith(1, null, {
         result: '00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b'
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlock: getBlock,
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.getBlock(0, function(err, block) {
+      atbcoind.getBlock(0, function(err, block) {
         should.not.exist(err);
         getBlock.args[0][0].should.equal('00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b');
         getBlock.args[0][1].should.equal(false);
@@ -3875,18 +3875,18 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will getblock as bitcore object', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockhex
       });
       var getBlockHash = sinon.stub();
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlock: getBlock,
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.getBlock('00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b', function(err, block) {
+      atbcoind.getBlock('00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b', function(err, block) {
         should.not.exist(err);
         getBlockHash.callCount.should.equal(0);
         getBlock.callCount.should.equal(1);
@@ -3897,24 +3897,24 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will get block from cache', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockhex
       });
       var getBlockHash = sinon.stub();
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlock: getBlock,
           getBlockHash: getBlockHash
         }
       });
       var hash = '00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b';
-      bitcoind.getBlock(hash, function(err, block) {
+      atbcoind.getBlock(hash, function(err, block) {
         should.not.exist(err);
         getBlockHash.callCount.should.equal(0);
         getBlock.callCount.should.equal(1);
         block.should.be.instanceof(bitcore.Block);
-        bitcoind.getBlock(hash, function(err, block) {
+        atbcoind.getBlock(hash, function(err, block) {
           should.not.exist(err);
           getBlockHash.callCount.should.equal(0);
           getBlock.callCount.should.equal(1);
@@ -3924,25 +3924,25 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will get block from cache with height (but not height)', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockhex
       });
       var getBlockHash = sinon.stub().callsArgWith(1, null, {
         result: '00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b'
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlock: getBlock,
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.getBlock(0, function(err, block) {
+      atbcoind.getBlock(0, function(err, block) {
         should.not.exist(err);
         getBlockHash.callCount.should.equal(1);
         getBlock.callCount.should.equal(1);
         block.should.be.instanceof(bitcore.Block);
-        bitcoind.getBlock(0, function(err, block) {
+        atbcoind.getBlock(0, function(err, block) {
           should.not.exist(err);
           getBlockHash.callCount.should.equal(2);
           getBlock.callCount.should.equal(1);
@@ -3955,32 +3955,32 @@ describe('Bitcoin Service', function() {
 
   describe('#getBlockHashesByTimestamp', function() {
     it('should give an rpc error', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockHashes = sinon.stub().callsArgWith(3, {message: 'error', code: -1});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHashes: getBlockHashes
         }
       });
-      bitcoind.getBlockHashesByTimestamp(1441911000, 1441914000, function(err, hashes) {
+      atbcoind.getBlockHashesByTimestamp(1441911000, 1441914000, function(err, hashes) {
         should.exist(err);
         err.message.should.equal('error');
         done();
       });
     });
     it('should get the correct block hashes', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var block1 = '00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b';
       var block2 = '000000000383752a55a0b2891ce018fd0fdc0b6352502772b034ec282b4a1bf6';
       var getBlockHashes = sinon.stub().callsArgWith(3, null, {
         result: [block2, block1]
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHashes: getBlockHashes
         }
       });
-      bitcoind.getBlockHashesByTimestamp(1441914000, 1441911000, function(err, hashes) {
+      atbcoind.getBlockHashesByTimestamp(1441914000, 1441911000, function(err, hashes) {
         should.not.exist(err);
         hashes.should.deep.equal([block2, block1]);
         done();
@@ -3991,45 +3991,45 @@ describe('Bitcoin Service', function() {
   describe('#getBlockHeader', function() {
     var blockhash = '00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b';
     it('will give error from getBlockHash', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockHash = sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.getBlockHeader(10, function(err) {
+      atbcoind.getBlockHeader(10, function(err) {
         err.should.be.instanceof(Error);
       });
     });
     it('it will give rpc error from client getblockheader', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockHeader = sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHeader: getBlockHeader
         }
       });
-      bitcoind.getBlockHeader(blockhash, function(err) {
+      atbcoind.getBlockHeader(blockhash, function(err) {
         err.should.be.instanceof(Error);
       });
     });
     it('it will give rpc error from client getblockhash', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockHeader = sinon.stub();
       var getBlockHash = sinon.stub().callsArgWith(1, {code: -1, message: 'Test error'});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHeader: getBlockHeader,
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.getBlockHeader(0, function(err) {
+      atbcoind.getBlockHeader(0, function(err) {
         err.should.be.instanceof(Error);
       });
     });
     it('will give result from client getblockheader (from height)', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var result = {
         hash: '0000000000000a817cd3a74aec2f2246b59eb2cbb1ad730213e6c4a1d68ec2f6',
         version: 536870912,
@@ -4065,20 +4065,20 @@ describe('Bitcoin Service', function() {
       var getBlockHash = sinon.stub().callsArgWith(1, null, {
         result: blockhash
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHeader: getBlockHeader,
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.getBlockHeader(0, function(err, blockHeader) {
+      atbcoind.getBlockHeader(0, function(err, blockHeader) {
         should.not.exist(err);
         getBlockHeader.args[0][0].should.equal(blockhash);
         blockHeader.should.deep.equal(result);
       });
     });
     it('will give result from client getblockheader (from hash)', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var result = {
         hash: '0000000000000a817cd3a74aec2f2246b59eb2cbb1ad730213e6c4a1d68ec2f6',
         version: 536870912,
@@ -4112,13 +4112,13 @@ describe('Bitcoin Service', function() {
         }
       });
       var getBlockHash = sinon.stub();
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHeader: getBlockHeader,
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.getBlockHeader(blockhash, function(err, blockHeader) {
+      atbcoind.getBlockHeader(blockhash, function(err, blockHeader) {
         should.not.exist(err);
         getBlockHash.callCount.should.equal(0);
         blockHeader.should.deep.equal(result);
@@ -4128,14 +4128,14 @@ describe('Bitcoin Service', function() {
 
   describe('#_maybeGetBlockHash', function() {
     it('will not get block hash with an address', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockHash = sinon.stub();
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHash: getBlockHash
         }
       });
-      bitcoind._maybeGetBlockHash('2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br', function(err, hash) {
+      atbcoind._maybeGetBlockHash('2N2JD6wb56AfK4tfmM6PwdVmoYk2dCKf4Br', function(err, hash) {
         if (err) {
           return done(err);
         }
@@ -4145,14 +4145,14 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will not get block hash with non zero-nine numeric string', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockHash = sinon.stub();
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHash: getBlockHash
         }
       });
-      bitcoind._maybeGetBlockHash('109a', function(err, hash) {
+      atbcoind._maybeGetBlockHash('109a', function(err, hash) {
         if (err) {
           return done(err);
         }
@@ -4162,16 +4162,16 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will get the block hash if argument is a number', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockHash = sinon.stub().callsArgWith(1, null, {
         result: 'blockhash'
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHash: getBlockHash
         }
       });
-      bitcoind._maybeGetBlockHash(10, function(err, hash) {
+      atbcoind._maybeGetBlockHash(10, function(err, hash) {
         if (err) {
           return done(err);
         }
@@ -4181,16 +4181,16 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will get the block hash if argument is a number (as string)', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockHash = sinon.stub().callsArgWith(1, null, {
         result: 'blockhash'
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHash: getBlockHash
         }
       });
-      bitcoind._maybeGetBlockHash('10', function(err, hash) {
+      atbcoind._maybeGetBlockHash('10', function(err, hash) {
         if (err) {
           return done(err);
         }
@@ -4200,23 +4200,23 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will try multiple nodes if one fails', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockHash = sinon.stub().callsArgWith(1, null, {
         result: 'blockhash'
       });
       getBlockHash.onCall(0).callsArgWith(1, {code: -1, message: 'test'});
-      bitcoind.tryAllInterval = 1;
-      bitcoind.nodes.push({
+      atbcoind.tryAllInterval = 1;
+      atbcoind.nodes.push({
         client: {
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHash: getBlockHash
         }
       });
-      bitcoind._maybeGetBlockHash(10, function(err, hash) {
+      atbcoind._maybeGetBlockHash(10, function(err, hash) {
         if (err) {
           return done(err);
         }
@@ -4226,20 +4226,20 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will give error from getBlockHash', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlockHash = sinon.stub().callsArgWith(1, {code: -1, message: 'test'});
-      bitcoind.tryAllInterval = 1;
-      bitcoind.nodes.push({
+      atbcoind.tryAllInterval = 1;
+      atbcoind.nodes.push({
         client: {
           getBlockHash: getBlockHash
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlockHash: getBlockHash
         }
       });
-      bitcoind._maybeGetBlockHash(10, function(err, hash) {
+      atbcoind._maybeGetBlockHash(10, function(err, hash) {
         getBlockHash.callCount.should.equal(2);
         err.should.be.instanceOf(Error);
         err.message.should.equal('test');
@@ -4252,29 +4252,29 @@ describe('Bitcoin Service', function() {
   describe('#getBlockOverview', function() {
     var blockhash = '00000000050a6d07f583beba2d803296eb1e9d4980c4a20f206c584e89a4f02b';
     it('will handle error from maybeGetBlockHash', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind._maybeGetBlockHash = sinon.stub().callsArgWith(1, new Error('test'));
-      bitcoind.getBlockOverview(blockhash, function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind._maybeGetBlockHash = sinon.stub().callsArgWith(1, new Error('test'));
+      atbcoind.getBlockOverview(blockhash, function(err) {
         err.should.be.instanceOf(Error);
         done();
       });
     });
     it('will give error from client.getBlock', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBlock = sinon.stub().callsArgWith(2, {code: -1, message: 'test'});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlock: getBlock
         }
       });
-      bitcoind.getBlockOverview(blockhash, function(err) {
+      atbcoind.getBlockOverview(blockhash, function(err) {
         err.should.be.instanceOf(Error);
         err.message.should.equal('test');
         done();
       });
     });
     it('will give expected result', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var blockResult = {
         hash: blockhash,
         version: 536870912,
@@ -4293,7 +4293,7 @@ describe('Bitcoin Service', function() {
       var getBlock = sinon.stub().callsArgWith(2, null, {
         result: blockResult
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBlock: getBlock
         }
@@ -4313,12 +4313,12 @@ describe('Bitcoin Service', function() {
         blockOverview.bits.should.equal('1a13ca10');
         blockOverview.difficulty.should.equal(847779.0710240941);
       }
-      bitcoind.getBlockOverview(blockhash, function(err, blockOverview) {
+      atbcoind.getBlockOverview(blockhash, function(err, blockOverview) {
         if (err) {
           return done(err);
         }
         checkBlock(blockOverview);
-        bitcoind.getBlockOverview(blockhash, function(err, blockOverview) {
+        atbcoind.getBlockOverview(blockhash, function(err, blockOverview) {
           checkBlock(blockOverview);
           getBlock.callCount.should.equal(1);
           done();
@@ -4329,30 +4329,30 @@ describe('Bitcoin Service', function() {
 
   describe('#estimateFee', function() {
     it('will give rpc error', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var estimateFee = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           estimateFee: estimateFee
         }
       });
-      bitcoind.estimateFee(1, function(err) {
+      atbcoind.estimateFee(1, function(err) {
         should.exist(err);
         err.should.be.an.instanceof(errors.RPCError);
         done();
       });
     });
     it('will call client estimateFee and give result', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var estimateFee = sinon.stub().callsArgWith(1, null, {
         result: -1
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           estimateFee: estimateFee
         }
       });
-      bitcoind.estimateFee(1, function(err, feesPerKb) {
+      atbcoind.estimateFee(1, function(err, feesPerKb) {
         if (err) {
           return done(err);
         }
@@ -4365,29 +4365,29 @@ describe('Bitcoin Service', function() {
   describe('#sendTransaction', function(done) {
     var tx = bitcore.Transaction(txhex);
     it('will give rpc error', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var sendRawTransaction = sinon.stub().callsArgWith(2, {message: 'error', code: -1});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           sendRawTransaction: sendRawTransaction
         }
       });
-      bitcoind.sendTransaction(txhex, function(err) {
+      atbcoind.sendTransaction(txhex, function(err) {
         should.exist(err);
         err.should.be.an.instanceof(errors.RPCError);
       });
     });
     it('will send to client and get hash', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var sendRawTransaction = sinon.stub().callsArgWith(2, null, {
         result: tx.hash
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           sendRawTransaction: sendRawTransaction
         }
       });
-      bitcoind.sendTransaction(txhex, function(err, hash) {
+      atbcoind.sendTransaction(txhex, function(err, hash) {
         if (err) {
           return done(err);
         }
@@ -4395,16 +4395,16 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will send to client with absurd fees and get hash', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var sendRawTransaction = sinon.stub().callsArgWith(2, null, {
         result: tx.hash
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           sendRawTransaction: sendRawTransaction
         }
       });
-      bitcoind.sendTransaction(txhex, {allowAbsurdFees: true}, function(err, hash) {
+      atbcoind.sendTransaction(txhex, {allowAbsurdFees: true}, function(err, hash) {
         if (err) {
           return done(err);
         }
@@ -4412,60 +4412,60 @@ describe('Bitcoin Service', function() {
       });
     });
     it('missing callback will throw error', function() {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var sendRawTransaction = sinon.stub().callsArgWith(2, null, {
         result: tx.hash
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           sendRawTransaction: sendRawTransaction
         }
       });
       var transaction = bitcore.Transaction();
       (function() {
-        bitcoind.sendTransaction(transaction);
+        atbcoind.sendTransaction(transaction);
       }).should.throw(Error);
     });
   });
 
   describe('#getRawTransaction', function() {
     it('will give rpc error', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getRawTransaction = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: getRawTransaction
         }
       });
-      bitcoind.getRawTransaction('txid', function(err) {
+      atbcoind.getRawTransaction('txid', function(err) {
         should.exist(err);
         err.should.be.an.instanceof(errors.RPCError);
         done();
       });
     });
     it('will try all nodes', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.tryAllInterval = 1;
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.tryAllInterval = 1;
       var getRawTransactionWithError = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
       var getRawTransaction = sinon.stub().callsArgWith(1, null, {
         result: txhex
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: getRawTransactionWithError
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: getRawTransactionWithError
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: getRawTransaction
         }
       });
-      bitcoind.getRawTransaction('txid', function(err, tx) {
+      atbcoind.getRawTransaction('txid', function(err, tx) {
         if (err) {
           return done(err);
         }
@@ -4475,23 +4475,23 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will get from cache', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getRawTransaction = sinon.stub().callsArgWith(1, null, {
         result: txhex
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: getRawTransaction
         }
       });
-      bitcoind.getRawTransaction('txid', function(err, tx) {
+      atbcoind.getRawTransaction('txid', function(err, tx) {
         if (err) {
           return done(err);
         }
         should.exist(tx);
         tx.should.be.an.instanceof(Buffer);
 
-        bitcoind.getRawTransaction('txid', function(err, tx) {
+        atbcoind.getRawTransaction('txid', function(err, tx) {
           should.exist(tx);
           tx.should.be.an.instanceof(Buffer);
           getRawTransaction.callCount.should.equal(1);
@@ -4503,42 +4503,42 @@ describe('Bitcoin Service', function() {
 
   describe('#getTransaction', function() {
     it('will give rpc error', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getRawTransaction = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: getRawTransaction
         }
       });
-      bitcoind.getTransaction('txid', function(err) {
+      atbcoind.getTransaction('txid', function(err) {
         should.exist(err);
         err.should.be.an.instanceof(errors.RPCError);
         done();
       });
     });
     it('will try all nodes', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.tryAllInterval = 1;
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.tryAllInterval = 1;
       var getRawTransactionWithError = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
       var getRawTransaction = sinon.stub().callsArgWith(1, null, {
         result: txhex
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: getRawTransactionWithError
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: getRawTransactionWithError
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: getRawTransaction
         }
       });
-      bitcoind.getTransaction('txid', function(err, tx) {
+      atbcoind.getTransaction('txid', function(err, tx) {
         if (err) {
           return done(err);
         }
@@ -4548,23 +4548,23 @@ describe('Bitcoin Service', function() {
       });
     });
     it('will get from cache', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getRawTransaction = sinon.stub().callsArgWith(1, null, {
         result: txhex
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: getRawTransaction
         }
       });
-      bitcoind.getTransaction('txid', function(err, tx) {
+      atbcoind.getTransaction('txid', function(err, tx) {
         if (err) {
           return done(err);
         }
         should.exist(tx);
         tx.should.be.an.instanceof(bitcore.Transaction);
 
-        bitcoind.getTransaction('txid', function(err, tx) {
+        atbcoind.getTransaction('txid', function(err, tx) {
           should.exist(tx);
           tx.should.be.an.instanceof(bitcore.Transaction);
           getRawTransaction.callCount.should.equal(1);
@@ -4618,25 +4618,25 @@ describe('Bitcoin Service', function() {
       ]
     };
     it('should give a transaction with height and timestamp', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.nodes.push({
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: sinon.stub().callsArgWith(2, {code: -1, message: 'Test error'})
         }
       });
       var txid = '2d950d00494caf6bfc5fff2a3f839f0eb50f663ae85ce092bc5f9d45296ae91f';
-      bitcoind.getDetailedTransaction(txid, function(err) {
+      atbcoind.getDetailedTransaction(txid, function(err) {
         should.exist(err);
         err.should.be.instanceof(errors.RPCError);
         done();
       });
     });
     it('should give a transaction with all properties', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getRawTransaction = sinon.stub().callsArgWith(2, null, {
         result: rpcRawTransaction
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: getRawTransaction
         }
@@ -4673,12 +4673,12 @@ describe('Bitcoin Service', function() {
         should.equal(output.spentIndex, 2);
         should.equal(output.spentHeight, 100);
       }
-      bitcoind.getDetailedTransaction(txid, function(err, tx) {
+      atbcoind.getDetailedTransaction(txid, function(err, tx) {
         if (err) {
           return done(err);
         }
         checkTx(tx);
-        bitcoind.getDetailedTransaction(txid, function(err, tx) {
+        atbcoind.getDetailedTransaction(txid, function(err, tx) {
           if (err) {
             return done(err);
           }
@@ -4689,7 +4689,7 @@ describe('Bitcoin Service', function() {
       });
     });
     it('should set coinbase to true', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var rawTransaction = JSON.parse((JSON.stringify(rpcRawTransaction)));
       delete rawTransaction.vin[0];
       rawTransaction.vin = [
@@ -4697,7 +4697,7 @@ describe('Bitcoin Service', function() {
           coinbase: 'abcdef'
         }
       ];
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: sinon.stub().callsArgWith(2, null, {
             result: rawTransaction
@@ -4705,17 +4705,17 @@ describe('Bitcoin Service', function() {
         }
       });
       var txid = '2d950d00494caf6bfc5fff2a3f839f0eb50f663ae85ce092bc5f9d45296ae91f';
-      bitcoind.getDetailedTransaction(txid, function(err, tx) {
+      atbcoind.getDetailedTransaction(txid, function(err, tx) {
         should.exist(tx);
         should.equal(tx.coinbase, true);
         done();
       });
     });
     it('will not include address if address length is zero', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var rawTransaction = JSON.parse((JSON.stringify(rpcRawTransaction)));
       rawTransaction.vout[0].scriptPubKey.addresses = [];
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: sinon.stub().callsArgWith(2, null, {
             result: rawTransaction
@@ -4723,17 +4723,17 @@ describe('Bitcoin Service', function() {
         }
       });
       var txid = '2d950d00494caf6bfc5fff2a3f839f0eb50f663ae85ce092bc5f9d45296ae91f';
-      bitcoind.getDetailedTransaction(txid, function(err, tx) {
+      atbcoind.getDetailedTransaction(txid, function(err, tx) {
         should.exist(tx);
         should.equal(tx.outputs[0].address, null);
         done();
       });
     });
     it('will not include address if address length is greater than 1', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var rawTransaction = JSON.parse((JSON.stringify(rpcRawTransaction)));
       rawTransaction.vout[0].scriptPubKey.addresses = ['one', 'two'];
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: sinon.stub().callsArgWith(2, null, {
             result: rawTransaction
@@ -4741,17 +4741,17 @@ describe('Bitcoin Service', function() {
         }
       });
       var txid = '2d950d00494caf6bfc5fff2a3f839f0eb50f663ae85ce092bc5f9d45296ae91f';
-      bitcoind.getDetailedTransaction(txid, function(err, tx) {
+      atbcoind.getDetailedTransaction(txid, function(err, tx) {
         should.exist(tx);
         should.equal(tx.outputs[0].address, null);
         done();
       });
     });
     it('will handle scriptPubKey.addresses not being set', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var rawTransaction = JSON.parse((JSON.stringify(rpcRawTransaction)));
       delete rawTransaction.vout[0].scriptPubKey['addresses'];
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: sinon.stub().callsArgWith(2, null, {
             result: rawTransaction
@@ -4759,18 +4759,18 @@ describe('Bitcoin Service', function() {
         }
       });
       var txid = '2d950d00494caf6bfc5fff2a3f839f0eb50f663ae85ce092bc5f9d45296ae91f';
-      bitcoind.getDetailedTransaction(txid, function(err, tx) {
+      atbcoind.getDetailedTransaction(txid, function(err, tx) {
         should.exist(tx);
         should.equal(tx.outputs[0].address, null);
         done();
       });
     });
     it('will not include script if input missing scriptSig or coinbase', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var rawTransaction = JSON.parse((JSON.stringify(rpcRawTransaction)));
       delete rawTransaction.vin[0].scriptSig;
       delete rawTransaction.vin[0].coinbase;
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: sinon.stub().callsArgWith(2, null, {
             result: rawTransaction
@@ -4778,17 +4778,17 @@ describe('Bitcoin Service', function() {
         }
       });
       var txid = '2d950d00494caf6bfc5fff2a3f839f0eb50f663ae85ce092bc5f9d45296ae91f';
-      bitcoind.getDetailedTransaction(txid, function(err, tx) {
+      atbcoind.getDetailedTransaction(txid, function(err, tx) {
         should.exist(tx);
         should.equal(tx.inputs[0].script, null);
         done();
       });
     });
     it('will set height to -1 if missing height', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var rawTransaction = JSON.parse((JSON.stringify(rpcRawTransaction)));
       delete rawTransaction.height;
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getRawTransaction: sinon.stub().callsArgWith(2, null, {
             result: rawTransaction
@@ -4796,7 +4796,7 @@ describe('Bitcoin Service', function() {
         }
       });
       var txid = '2d950d00494caf6bfc5fff2a3f839f0eb50f663ae85ce092bc5f9d45296ae91f';
-      bitcoind.getDetailedTransaction(txid, function(err, tx) {
+      atbcoind.getDetailedTransaction(txid, function(err, tx) {
         should.exist(tx);
         should.equal(tx.height, -1);
         done();
@@ -4806,30 +4806,30 @@ describe('Bitcoin Service', function() {
 
   describe('#getBestBlockHash', function() {
     it('will give rpc error', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, {message: 'error', code: -1});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBestBlockHash: getBestBlockHash
         }
       });
-      bitcoind.getBestBlockHash(function(err) {
+      atbcoind.getBestBlockHash(function(err) {
         should.exist(err);
         err.should.be.an.instanceof(errors.RPCError);
         done();
       });
     });
     it('will call client getInfo and give result', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getBestBlockHash = sinon.stub().callsArgWith(0, null, {
         result: 'besthash'
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getBestBlockHash: getBestBlockHash
         }
       });
-      bitcoind.getBestBlockHash(function(err, hash) {
+      atbcoind.getBestBlockHash(function(err, hash) {
         if (err) {
           return done(err);
         }
@@ -4842,35 +4842,35 @@ describe('Bitcoin Service', function() {
 
   describe('#getSpentInfo', function() {
     it('will give rpc error', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getSpentInfo = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getSpentInfo: getSpentInfo
         }
       });
-      bitcoind.getSpentInfo({}, function(err) {
+      atbcoind.getSpentInfo({}, function(err) {
         should.exist(err);
         err.should.be.an.instanceof(errors.RPCError);
         done();
       });
     });
     it('will empty object when not found', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getSpentInfo = sinon.stub().callsArgWith(1, {message: 'test', code: -5});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getSpentInfo: getSpentInfo
         }
       });
-      bitcoind.getSpentInfo({}, function(err, info) {
+      atbcoind.getSpentInfo({}, function(err, info) {
         should.not.exist(err);
         info.should.deep.equal({});
         done();
       });
     });
     it('will call client getSpentInfo and give result', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getSpentInfo = sinon.stub().callsArgWith(1, null, {
         result: {
           txid: 'txid',
@@ -4878,12 +4878,12 @@ describe('Bitcoin Service', function() {
           height: 101
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getSpentInfo: getSpentInfo
         }
       });
-      bitcoind.getSpentInfo({}, function(err, info) {
+      atbcoind.getSpentInfo({}, function(err, info) {
         if (err) {
           return done(err);
         }
@@ -4897,22 +4897,22 @@ describe('Bitcoin Service', function() {
 
   describe('#getInfo', function() {
     it('will give rpc error', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var getInfo = sinon.stub().callsArgWith(0, {message: 'error', code: -1});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getInfo: getInfo
         }
       });
-      bitcoind.getInfo(function(err) {
+      atbcoind.getInfo(function(err) {
         should.exist(err);
         err.should.be.an.instanceof(errors.RPCError);
         done();
       });
     });
     it('will call client getInfo and give result', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.node.getNetworkName = sinon.stub().returns('testnet');
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.node.getNetworkName = sinon.stub().returns('testnet');
       var getInfo = sinon.stub().callsArgWith(0, null, {
         result: {
           version: 1,
@@ -4927,12 +4927,12 @@ describe('Bitcoin Service', function() {
           errors: ''
         }
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           getInfo: getInfo
         }
       });
-      bitcoind.getInfo(function(err, info) {
+      atbcoind.getInfo(function(err, info) {
         if (err) {
           return done(err);
         }
@@ -4955,30 +4955,30 @@ describe('Bitcoin Service', function() {
 
   describe('#generateBlock', function() {
     it('will give rpc error', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var generate = sinon.stub().callsArgWith(1, {message: 'error', code: -1});
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           generate: generate
         }
       });
-      bitcoind.generateBlock(10, function(err) {
+      atbcoind.generateBlock(10, function(err) {
         should.exist(err);
         err.should.be.an.instanceof(errors.RPCError);
         done();
       });
     });
     it('will call client generate and give result', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
+      var atbcoind = new BitcoinService(baseConfig);
       var generate = sinon.stub().callsArgWith(1, null, {
         result: ['hash']
       });
-      bitcoind.nodes.push({
+      atbcoind.nodes.push({
         client: {
           generate: generate
         }
       });
-      bitcoind.generateBlock(10, function(err, hashes) {
+      atbcoind.generateBlock(10, function(err, hashes) {
         if (err) {
           return done(err);
         }
@@ -4991,45 +4991,45 @@ describe('Bitcoin Service', function() {
 
   describe('#stop', function() {
     it('will callback if spawn is not set', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.stop(done);
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.stop(done);
     });
     it('will exit spawned process', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.spawn = {};
-      bitcoind.spawn.process = new EventEmitter();
-      bitcoind.spawn.process.kill = sinon.stub();
-      bitcoind.stop(done);
-      bitcoind.spawn.process.kill.callCount.should.equal(1);
-      bitcoind.spawn.process.kill.args[0][0].should.equal('SIGINT');
-      bitcoind.spawn.process.emit('exit', 0);
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.spawn = {};
+      atbcoind.spawn.process = new EventEmitter();
+      atbcoind.spawn.process.kill = sinon.stub();
+      atbcoind.stop(done);
+      atbcoind.spawn.process.kill.callCount.should.equal(1);
+      atbcoind.spawn.process.kill.args[0][0].should.equal('SIGINT');
+      atbcoind.spawn.process.emit('exit', 0);
     });
     it('will give error with non-zero exit status code', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.spawn = {};
-      bitcoind.spawn.process = new EventEmitter();
-      bitcoind.spawn.process.kill = sinon.stub();
-      bitcoind.stop(function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.spawn = {};
+      atbcoind.spawn.process = new EventEmitter();
+      atbcoind.spawn.process.kill = sinon.stub();
+      atbcoind.stop(function(err) {
         err.should.be.instanceof(Error);
         err.code.should.equal(1);
         done();
       });
-      bitcoind.spawn.process.kill.callCount.should.equal(1);
-      bitcoind.spawn.process.kill.args[0][0].should.equal('SIGINT');
-      bitcoind.spawn.process.emit('exit', 1);
+      atbcoind.spawn.process.kill.callCount.should.equal(1);
+      atbcoind.spawn.process.kill.args[0][0].should.equal('SIGINT');
+      atbcoind.spawn.process.emit('exit', 1);
     });
     it('will stop after timeout', function(done) {
-      var bitcoind = new BitcoinService(baseConfig);
-      bitcoind.shutdownTimeout = 300;
-      bitcoind.spawn = {};
-      bitcoind.spawn.process = new EventEmitter();
-      bitcoind.spawn.process.kill = sinon.stub();
-      bitcoind.stop(function(err) {
+      var atbcoind = new BitcoinService(baseConfig);
+      atbcoind.shutdownTimeout = 300;
+      atbcoind.spawn = {};
+      atbcoind.spawn.process = new EventEmitter();
+      atbcoind.spawn.process.kill = sinon.stub();
+      atbcoind.stop(function(err) {
         err.should.be.instanceof(Error);
         done();
       });
-      bitcoind.spawn.process.kill.callCount.should.equal(1);
-      bitcoind.spawn.process.kill.args[0][0].should.equal('SIGINT');
+      atbcoind.spawn.process.kill.callCount.should.equal(1);
+      atbcoind.spawn.process.kill.args[0][0].should.equal('SIGINT');
     });
   });
 
