@@ -152,8 +152,8 @@ spentindex=1
 zmqpubrawtx=tcp://127.0.0.1:28332
 zmqpubhashblock=tcp://127.0.0.1:28332
 rpcallowip=127.0.0.1
-rpcuser=bitcoin
-rpcpassword=local321
+rpcuser=atbcoin
+rpcpassword=atbcoinpassword
 ```
 
 From within the `devnode` directory with the configuration file, start the node:

@@ -4,7 +4,7 @@ The ATBcoin Service is a Node.js interface to ATBcoin Core for querying informat
 
 ## Configuration
 
-The default configuration will include a "spawn" configuration in "atbcoind". This defines the location of the block chain database and the location of the `atbcoind` daemon executable. The below configuration points to a local clone of `bitcoin`, and will start `atbcoind` automatically with your Node.js application.
+The default configuration will include a "spawn" configuration in "atbcoind". This defines the location of the block chain database and the location of the `atbcoind` daemon executable. The below configuration points to a local clone of `atbcoin`, and will start `atbcoind` automatically with your Node.js application.
 
 ```json
   "servicesConfig": {
