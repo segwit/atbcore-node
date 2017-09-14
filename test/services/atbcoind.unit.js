@@ -390,7 +390,10 @@ describe('Bitcoin Service', function() {
         upnp: 0,
         whitelist: '127.0.0.1',
         zmqpubhashblock: 'tcp://127.0.0.1:28332',
-        zmqpubrawtx: 'tcp://127.0.0.1:28332'
+        zmqpubrawtx: 'tcp://127.0.0.1:28332',
+        addrindex: 1,
+        reindex: 1,
+        gen: 0
       });
     });
     it('will expand relative datadir to absolute path', function() {
