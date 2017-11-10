@@ -1,7 +1,7 @@
 ATBcore Node
 ============
 
-A ATBcoin full node for building applications and services with Node.js. A node is extensible and can be configured to run additional services. At the minimum a node has an interface to [ATBcoin Core with additional indexing](https://github.com/segwit/atbcoin-insight) for more advanced address queries. Additional services can be enabled to make a node more useful such as exposing new APIs, running a block explorer and wallet service.
+A ATBcoin full node for building applications and services with Node.js. A node is extensible and can be configured to run additional services. At the minimum a node has an interface to [ATBcoin Core with additional indexing](https://github.com/segwit/atbcoin) for more advanced address queries. Additional services can be enabled to make a node more useful such as exposing new APIs, running a block explorer and wallet service.
 
 ## Install
 
@@ -10,7 +10,7 @@ npm install -g atbcore-node
 atbcore-node start
 ```
 
-Note: For your convenience, we distribute atbcoind binaries for x86_64 Linux and x86_64 Mac OS X. Upon npm install, the binaries for your platform will be downloaded. For more detailed installation instructions, or if you want to compile the project yourself, then please see the ATBcore branch of [ATBcoin Core with additional indexing](https://github.com/segwit/atbcoin-insight).
+Note: For your convenience, we distribute atbcoind binaries for x86_64 Linux and x86_64 Mac OS X. Upon npm install, the binaries for your platform will be downloaded. For more detailed installation instructions, or if you want to compile the project yourself, then please see the ATBcore branch of [ATBcoin Core with additional indexing](https://github.com/segwit/atbcoin).
 
 ## Configuration
 

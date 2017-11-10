@@ -1,6 +1,6 @@
 # ATBcoin Service
 
-The ATBcoin Service is a Node.js interface to ATBcoin Core for querying information about the ATBcoin block chain. It will manage starting and stopping `atbcoind` or connect to several running `atbcoind` processes. It uses a branch of a [ATBcoin Core](https://github.com/segwit/atbcoin-insight) with additional indexes for querying information about addresses and blocks. Results are cached for performance and there are several additional API methods added for common queries.
+The ATBcoin Service is a Node.js interface to ATBcoin Core for querying information about the ATBcoin block chain. It will manage starting and stopping `atbcoind` or connect to several running `atbcoind` processes. It uses a branch of a [ATBcoin Core](https://github.com/segwit/atbcoin) with additional indexes for querying information about addresses and blocks. Results are cached for performance and there are several additional API methods added for common queries.
 
 ## Configuration
 
